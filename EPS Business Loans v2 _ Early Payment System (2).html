@@ -1,0 +1,1682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Business Loans | Early Payment System (EPS) · v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#2C6394; --red-ink:#1F4E7A; --orange:#C9A45F; --gold:#C9A45F; --gold-ink:#86662A; --gold-bg:#F7F0E1; --navy:#14365A; --navy-2:#2C6394;
+  --bg:#FFFFFF; --surface:#F6F6F8; --surface-2:#EDEDF1; --ink:#1D1D22; --ink-2:#4A4A55; --muted:#76767F;
+  --line:#E2E2E8; --ok:#11845B; --ok-bg:#E6F5EE; --warn:#B25E09; --warn-bg:#FDF0E3; --bad:#C4103A; --bad-bg:#FDE8ED;
+  --info-bg:#EAF1F8; --shadow:0 1px 2px rgba(20,20,30,.06),0 4px 16px rgba(20,20,30,.05);
+  --font:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#141418; --surface:#1D1D23; --surface-2:#26262E; --ink:#F1F1F4; --ink-2:#C6C6CF; --muted:#9A9AA6;
+  --line:#32323C; --orange:#D9B878; --ok:#4FD19B; --ok-bg:#133226; --warn:#F2A25A; --warn-bg:#3A2614; --bad:#FF6B8A; --bad-bg:#3D1621; --info-bg:#162A3F;
+  --red-ink:#8EC0EE; --red:#3B7BB8; --gold-ink:#D9B878; --gold-bg:#2E2718; --shadow:none;
+}}
+:root[data-theme="dark"]{
+  --bg:#141418; --surface:#1D1D23; --surface-2:#26262E; --ink:#F1F1F4; --ink-2:#C6C6CF; --muted:#9A9AA6;
+  --line:#32323C; --orange:#D9B878; --ok:#4FD19B; --ok-bg:#133226; --warn:#F2A25A; --warn-bg:#3A2614; --bad:#FF6B8A; --bad-bg:#3D1621; --info-bg:#162A3F;
+  --red-ink:#8EC0EE; --red:#3B7BB8; --gold-ink:#D9B878; --gold-bg:#2E2718; --shadow:none;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+h1,h2,h3,h4{margin:0;line-height:1.2}
+.logo-dark{display:none}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .logo-light{display:none}:root:not([data-theme="light"]) .logo-dark{display:block}}
+:root[data-theme="dark"] .logo-light{display:none}:root[data-theme="dark"] .logo-dark{display:block}
+
+/* top bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+.bar-in{max-width:1440px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand img{height:30px;width:auto}
+.brand-t{font-weight:700;font-size:15px;white-space:nowrap}
+.brand-s{font-size:12px;color:var(--muted)}
+.bar-sp{flex:1}
+.seg{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:3px}
+.seg button{border:0;background:transparent;padding:6px 12px;border-radius:7px;cursor:pointer;font-weight:600;font-size:13.5px;color:var(--ink-2)}
+.seg button[aria-pressed="true"]{background:var(--bg);color:var(--ink);box-shadow:var(--shadow);outline:1px solid var(--line)}
+.ctl{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+select{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:13.5px;max-width:260px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;line-height:1.3;border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:8px 14px;font-weight:600;font-size:14px;cursor:pointer}
+.btn:hover{background:var(--surface)}
+.btn.primary{background:var(--red);border-color:var(--red);color:#fff}
+.btn.primary:hover{background:var(--red-ink);border-color:var(--red-ink)}
+.btn.small{padding:5px 10px;font-size:13px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+
+/* layout */
+.wrap{max-width:1440px;margin:0 auto;padding:20px;display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:20px;align-items:start}
+@media (max-width:1100px){.wrap{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--bg);border:1px solid var(--line);border-radius:14px}
+.card{background:var(--surface);border-radius:12px;padding:18px}
+.pad{padding:22px}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.xs{font-size:12px}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.grid2,.grid3{grid-template-columns:minmax(0,1fr)}.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stack>*+*{margin-top:14px}
+hr{border:0;border-top:1px solid var(--line);margin:18px 0}
+
+/* portal header */
+.ph{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:flex-start;padding:20px 22px 0}
+.ph h2{font-size:22px;font-weight:700;letter-spacing:-.01em}
+.status{display:flex;gap:8px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 10px;font-size:12.5px;font-weight:600;background:var(--surface-2);color:var(--ink-2);white-space:nowrap}
+.pill.ok{background:var(--ok-bg);color:var(--ok)}.pill.warn{background:var(--warn-bg);color:var(--warn)}.pill.bad{background:var(--bad-bg);color:var(--bad)}.pill.red{background:var(--info-bg);color:var(--red-ink)}
+.dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+
+/* stepper */
+.steps{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;padding:18px 22px 0}
+.st{border-top:3px solid var(--line);padding-top:8px;font-size:12.5px;color:var(--muted);font-weight:600}
+.st b{display:block;font-size:11.5px;font-weight:600;color:var(--muted)}
+.st.done{border-color:var(--orange);color:var(--ink-2)}
+.st.cur{border-color:var(--red);color:var(--ink)}
+@media (max-width:760px){.st span{display:none}}
+
+/* explainer */
+.why{display:flex;gap:12px;background:var(--info-bg);border-radius:12px;padding:12px 14px;font-size:13.5px;color:var(--ink-2)}
+.why strong{color:var(--ink)}
+.why svg{flex:none;margin-top:2px;color:var(--red)}
+
+/* forms */
+label.f{display:block;font-size:13px;font-weight:600;color:var(--ink-2)}
+label.f input,label.f select{display:block;width:100%;max-width:none;margin-top:5px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:14.5px;font-weight:500;color:var(--ink)}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--ink-2)}
+.check input{margin-top:3px;accent-color:var(--red);width:16px;height:16px}
+
+/* checks list */
+.checks{list-style:none;margin:0;padding:0}
+.checks li{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);align-items:start}
+.checks li:last-child{border-bottom:0}
+.ic{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;margin-top:1px}
+.ic.wait{border:2px solid var(--line)}
+.ic.run{border:2px solid var(--orange);border-top-color:transparent;animation:spin .8s linear infinite}
+.ic.ok{background:var(--ok);color:#fff}.ic.bad{background:var(--bad);color:#fff}.ic.warn{background:var(--warn);color:#fff}.ic.skip{background:var(--surface-2);color:var(--muted)}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion: reduce){.ic.run{animation:none}}
+.chk-t{font-weight:600;font-size:14px}
+.chk-d{font-size:12.5px;color:var(--muted)}
+.cost{font-variant-numeric:tabular-nums;font-size:13px;color:var(--ink-2);white-space:nowrap;text-align:right}
+
+/* big figures */
+.fig{font-size:30px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1}
+.fig.red{color:var(--red-ink)}
+.lbl{font-size:12.5px;color:var(--muted);font-weight:500}
+.kv{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 16px;font-size:14px}
+.kv dt{color:var(--muted)}.kv dd{margin:0;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+
+/* engine */
+.stage{display:grid;grid-template-columns:34px minmax(0,1fr) 96px;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.stage:last-child{border-bottom:0}
+.sn{width:30px;height:30px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;font-weight:700;font-size:13px;color:var(--muted)}
+.stage.on .sn{background:var(--red);color:#fff}
+.stage.done .sn{background:var(--gold);color:#14365A}
+.bar-o{height:8px;border-radius:4px;background:var(--surface-2);overflow:hidden}
+.bar-i{height:100%;background:var(--red);border-radius:4px;transition:width .6s ease}
+.score{font-weight:700;font-variant-numeric:tabular-nums;text-align:right}
+.lowerof{display:grid;gap:8px}
+.lo{display:grid;grid-template-columns:180px minmax(0,1fr) 120px;gap:10px;align-items:center;font-size:13.5px}
+.lo .bar-i{background:var(--muted)}
+.lo.min .bar-i{background:var(--red)}
+.lo.min{font-weight:700}
+@media (max-width:760px){.lo{grid-template-columns:120px minmax(0,1fr) 96px}}
+.reason{display:flex;gap:10px;font-size:13.5px;padding:6px 0}
+.code{font-family:var(--mono);font-size:12px;background:var(--surface-2);border-radius:6px;padding:1px 6px;white-space:nowrap;height:fit-content}
+
+/* table */
+.tbl-w{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;font-weight:600;color:var(--muted);font-size:12.5px;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums;vertical-align:top}
+td.n,th.n{text-align:right}
+
+/* trace rail */
+
+
+.rail-h{padding:16px 18px 10px;border-bottom:1px solid var(--line)}
+.rail-h h3{font-size:15px;font-weight:700}
+.layers{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.ly{font-size:11.5px;font-weight:600;border-radius:6px;padding:3px 7px;background:var(--surface);color:var(--muted);border:1px solid transparent;transition:background .3s,color .3s}
+.ly.hot{background:var(--red);color:#fff}
+.ly.used{color:var(--ink-2);border-color:var(--line)}
+.spend{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.spend div{background:var(--surface);border-radius:9px;padding:8px 10px}
+.spend b{display:block;font-size:17px;font-variant-numeric:tabular-nums}
+.spend span{font-size:11.5px;color:var(--muted)}
+.feed{overflow-y:auto;padding:6px 18px 16px;flex:1;min-height:200px}
+@media (max-width:1100px){.feed{max-height:420px}}
+.ev{padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
+.ev-h{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.tag{font-size:11px;font-weight:700;border-radius:5px;padding:1px 6px;background:var(--surface-2);color:var(--ink-2)}
+.tag.ext{background:var(--warn-bg);color:var(--warn)}
+.tag.eng{background:var(--info-bg);color:var(--red-ink)}
+.tag.ok{background:var(--ok-bg);color:var(--ok)}
+.ev-t{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.ev-m{margin-top:3px;color:var(--ink-2)}
+.ev-c{font-weight:600;color:var(--ink)}
+details.payload summary{cursor:pointer;font-size:12px;color:var(--red-ink);margin-top:4px;font-weight:600}
+pre{font-family:var(--mono);font-size:11.5px;background:var(--surface);border-radius:8px;padding:10px;overflow-x:auto;margin:6px 0 0;white-space:pre;color:var(--ink-2)}
+.empty{padding:30px 0;text-align:center;color:var(--muted);font-size:13.5px}
+
+/* chart */
+.chart svg{width:100%;height:auto;display:block}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-2);margin-top:8px}
+.sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+
+/* toast */
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;font-weight:600;z-index:50;box-shadow:0 8px 24px rgba(0,0,0,.2);max-width:90vw}
+.hidden{display:none}
+.timer{font-variant-numeric:tabular-nums;font-weight:700}
+.bo-nav{display:flex;gap:4px;padding:16px 22px 0;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+.bo-nav button{border:0;background:transparent;padding:8px 12px;font-weight:600;font-size:14px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.bo-nav button[aria-current="true"]{color:var(--ink);border-bottom-color:var(--red)}
+.qi{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:12px}
+.qi+.qi{margin-top:10px}
+.sig{font-family:"Brush Script MT","Segoe Script",cursive;font-size:26px;color:var(--ink)}
+.cfg{display:grid;grid-template-columns:minmax(0,1fr) 110px;gap:10px 14px;align-items:center;font-size:14px}
+.cfg input{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 8px;text-align:right;font-variant-numeric:tabular-nums}
+.cfg input.changed{border-color:var(--orange);background:var(--warn-bg)}
+
+/* ===== website chrome ===== */
+.site-h{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--bg);border-bottom:1px solid var(--line)}
+.site-h.dark{background:var(--navy);border-bottom-color:var(--navy)}
+.sh-in{max-width:1240px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:28px}
+.sh-in.wide{max-width:none}
+.eps-logo{height:32px;width:auto;display:block}.logo-d{display:none}
+.site-h.dark .logo-l,.foot .logo-l{display:none}.site-h.dark .logo-d,.foot .logo-d{display:block}
+:root[data-theme="dark"] .logo-l{display:none}:root[data-theme="dark"] .logo-d{display:block}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .logo-l{display:none}:root:not([data-theme="light"]) .logo-d{display:block}}
+.logo{display:flex;align-items:center;border:0;background:none;padding:0;cursor:pointer;color:var(--navy)}
+:root[data-theme="dark"] .logo{color:#fff}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .logo{color:#fff}}
+.site-h.dark .logo{color:#fff}
+.nav{display:flex;gap:4px}
+.nav button{border:0;background:none;padding:8px 12px;font-weight:600;font-size:14.5px;color:var(--ink-2);cursor:pointer;border-radius:8px}
+.nav button:hover{color:var(--ink);background:var(--surface)}
+.sh-sp{flex:1}
+.link{border:0;background:none;font-weight:600;color:var(--ink);cursor:pointer;padding:8px 10px}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--navy-2);color:#fff;box-shadow:0 0 0 2px var(--gold);display:grid;place-items:center;font-weight:700;font-size:13px}
+:root[data-theme="dark"] .avatar{background:var(--navy-2)}
+@media (max-width:900px){.nav{display:none}}
+.btn.accent{background:var(--gold);border-color:var(--gold);color:#14365A}
+.btn.accent:hover{background:#B8924C;border-color:#B8924C}
+.btn.ghost-w{background:transparent;color:#fff;border-color:rgba(255,255,255,.4)}
+.btn.ghost-w:hover{background:rgba(255,255,255,.08)}
+.btn.lg{padding:12px 22px;font-size:15.5px;border-radius:12px;line-height:1.3;height:auto}
+
+/* hero */
+.hero{background:var(--navy);color:#fff;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-120px;top:-160px;width:560px;height:560px;border-radius:50%;border:70px solid rgba(201,164,95,.16);pointer-events:none}
+.hero-in{max-width:1240px;margin:0 auto;padding:72px 24px 80px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:56px;align-items:center;position:relative;z-index:1}
+@media (max-width:900px){.hero-in{grid-template-columns:minmax(0,1fr);padding:44px 20px 52px;gap:36px}}
+.badge{display:inline-flex;gap:8px;align-items:center;background:rgba(255,255,255,.1);border-radius:999px;padding:5px 12px 5px 6px;font-size:13px;font-weight:600}
+.badge b{background:var(--gold);color:#14365A;border-radius:999px;padding:2px 8px;font-size:11.5px}
+.hero h1{font-size:clamp(34px,5vw,56px);font-weight:800;letter-spacing:-.03em;line-height:1.04;margin:20px 0 18px;max-width:14ch}
+.hero p.lead{font-size:18px;line-height:1.55;color:#C9D3E3;max-width:46ch;margin:0 0 28px}
+.hero .row{gap:12px}
+.hero-card{background:#fff;color:#1D1D22;border-radius:18px;padding:24px;border-top:4px solid var(--gold);box-shadow:0 30px 60px rgba(0,0,0,.35)}
+.hc-top{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#76767F}
+.hc-amt{font-size:40px;font-weight:800;letter-spacing:-.03em;margin:6px 0 2px;color:#14365A}
+.hc-row{display:flex;justify-content:space-between;font-size:14px;padding:9px 0;border-top:1px solid #ECECF1}
+.hc-row span:first-child{color:#76767F}
+.hc-row span:last-child{font-weight:600}
+.ok-chip{background:#E6F5EE;color:#11845B;font-weight:700;border-radius:999px;padding:3px 10px;font-size:12px}
+
+/* sections */
+.sec{max-width:1240px;margin:0 auto;padding:80px 24px}
+@media (max-width:900px){.sec{padding:52px 20px}}
+.sec h2{font-size:clamp(26px,3.2vw,36px);font-weight:800;letter-spacing:-.02em;max-width:22ch}
+.sec .sub{font-size:16.5px;color:var(--ink-2);max-width:60ch;margin:12px 0 0}
+.prod{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:36px}
+@media (max-width:900px){.prod{grid-template-columns:minmax(0,1fr)}}
+.pc{border:1px solid var(--line);border-radius:16px;padding:26px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
+.pc.feat{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
+.pc h3{font-size:19px;font-weight:700}
+.pc p{margin:0;color:var(--ink-2);font-size:14.5px;flex:1}
+.pc ul{margin:0;padding-left:18px;font-size:14px;color:var(--ink-2)}
+.pc .tagn{align-self:flex-start;background:var(--gold-bg);color:var(--gold-ink);font-weight:700;font-size:12px;border-radius:999px;padding:3px 10px}
+.band{background:var(--surface)}
+.path{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-top:40px;align-items:start}
+@media (max-width:900px){.path{grid-template-columns:minmax(0,1fr)}}
+.pstep{position:relative;padding-right:18px}
+.pstep .num{font-size:40px;font-weight:800;color:var(--gold-ink);letter-spacing:-.03em;line-height:1}
+.pstep h4{font-size:16px;margin:10px 0 6px}
+.pstep p{margin:0;font-size:14px;color:var(--ink-2)}
+.pstep:not(:last-child)::after{content:"";position:absolute;right:4px;top:14px;width:10px;height:10px;border-top:3px solid var(--gold);border-right:3px solid var(--gold);transform:rotate(45deg)}
+@media (max-width:900px){.pstep:not(:last-child)::after{display:none}}
+.calc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:center}
+@media (max-width:900px){.calc{grid-template-columns:minmax(0,1fr)}}
+.calc-box{border:1px solid var(--line);border-radius:18px;padding:28px;background:var(--bg)}
+.calc-box input[type=range]{width:100%;accent-color:var(--red);margin:10px 0 4px}
+.calc-out{background:var(--navy);color:#fff;border-radius:14px;padding:20px;margin-top:20px}
+.calc-out .big{font-size:34px;font-weight:800;letter-spacing:-.02em}
+.tenors{display:flex;gap:8px;margin-top:8px}
+.tenors button{flex:1;border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:9px;font-weight:600;cursor:pointer}
+.tenors button[aria-pressed="true"]{background:var(--red);border-color:var(--red);color:#fff}
+.why4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px;margin-top:36px}
+@media (max-width:900px){.why4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.why4{grid-template-columns:minmax(0,1fr)}}
+.why4 .wi{width:44px;height:44px;border-radius:12px;background:var(--info-bg);color:var(--red-ink);display:grid;place-items:center;margin-bottom:12px}
+.why4 h4{font-size:16px;margin-bottom:6px}
+.why4 p{margin:0;font-size:14px;color:var(--ink-2)}
+.cta{background:var(--navy-2);color:#fff;border-radius:20px;padding:40px;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+.cta h2{color:#fff}
+.btn.white{background:var(--gold);color:#14365A;border-color:var(--gold)}
+.foot{background:var(--navy);color:#B9C4D6;font-size:14px}
+.foot-in{max-width:1240px;margin:0 auto;padding:52px 24px 28px;display:grid;grid-template-columns:1.4fr 1fr 1fr 1.2fr;gap:32px}
+@media (max-width:900px){.foot-in{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.foot h5{color:#fff;font-size:14px;margin:0 0 12px}
+.foot a,.foot button.fl{color:#B9C4D6;text-decoration:none;display:block;margin:6px 0;background:none;border:0;padding:0;cursor:pointer;font-size:14px;text-align:left}
+.foot a:hover,.foot button.fl:hover{color:#fff}
+.foot-b{border-top:1px solid rgba(255,255,255,.12);max-width:1240px;margin:0 auto;padding:18px 24px 90px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12.5px}
+
+/* app shells */
+.shell{display:grid;grid-template-columns:240px minmax(0,1fr);min-height:calc(100vh - 62px)}
+@media (max-width:900px){.shell{grid-template-columns:minmax(0,1fr)}}
+.side{border-right:1px solid var(--line);padding:20px 12px;background:var(--bg)}
+.side button{display:flex;width:100%;align-items:center;gap:10px;border:0;background:none;padding:10px 12px;border-radius:9px;font-weight:600;font-size:14.5px;color:var(--ink-2);cursor:pointer;text-align:left}
+.side button:hover{background:var(--surface)}
+.side button[aria-current="true"]{background:var(--info-bg);color:var(--red-ink)}
+.side .cnt{margin-left:auto;background:var(--gold);color:#14365A;color:#fff;border-radius:999px;font-size:11.5px;padding:1px 7px}
+.side-lbl{font-size:12px;color:var(--muted);padding:14px 12px 6px;font-weight:600}
+.side.dark{background:var(--navy);border-right-color:var(--navy)}
+.side.dark button{color:#B9C4D6}
+.side.dark button:hover{background:rgba(255,255,255,.06);color:#fff}
+.side.dark button[aria-current="true"]{background:rgba(201,164,95,.2);color:#fff}
+.side.dark .side-lbl{color:#7F8DA6}
+@media (max-width:900px){.side{display:flex;overflow-x:auto;padding:8px;border-right:0;border-bottom:1px solid var(--line)}.side button{width:auto;white-space:nowrap}.side-lbl{display:none}}
+.mainp{padding:8px 16px 100px;max-width:1080px;width:100%}
+.mainp .ph{padding-top:22px}
+body.trace-open .mainp{max-width:100%}
+.msg{padding:14px 0;border-bottom:1px solid var(--line)}
+.msg b{display:block}
+
+/* demo dock + trace drawer */
+.dock{position:fixed;left:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:60;display:flex;align-items:center;gap:8px;background:#1D1D22;color:#fff;border-radius:14px;padding:8px 10px;box-shadow:0 12px 30px rgba(0,0,0,.3);max-width:calc(100vw - 32px);overflow-x:auto}
+.dock .dl{font-size:12px;font-weight:700;color:#D9B878;padding:0 4px;white-space:nowrap}
+.dock select{background:#2B2B33;color:#fff;border-color:#3A3A44;max-width:210px}
+.dock .seg{background:#2B2B33;border-color:#3A3A44}
+.dock .seg button{color:#C6C6CF;white-space:nowrap}
+.dock .seg button[aria-pressed="true"]{background:#C9A45F;color:#14365A;outline:0}
+.dock .btn{background:#2B2B33;border-color:#3A3A44;color:#fff;white-space:nowrap}
+.dock .btn:hover{background:#3A3A44}
+.dock .btn[aria-pressed="true"]{background:#fff;color:#1D1D22}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:400px;max-width:100vw;z-index:55;background:var(--bg);border-left:1px solid var(--line);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s ease;padding-top:env(safe-area-inset-top,0px);}
+.drawer.open{transform:none;box-shadow:-10px 0 30px rgba(0,0,0,.08)}
+@media (prefers-reduced-motion: reduce){.drawer{transition:none}}
+body.trace-open{padding-right:400px}
+@media (max-width:1100px){body.trace-open{padding-right:0}}
+.drawer .feed{padding-bottom:90px}
+.xbtn{position:absolute;right:12px;top:calc(12px + env(safe-area-inset-top,0px));border:0;background:var(--surface);width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:16px}
+.toast{bottom:auto;top:calc(76px + env(safe-area-inset-top,0px))}
+
+/* =================== v2: 3D glassmorphism =================== */
+:root{--glass:rgba(255,255,255,.52);--glass-2:rgba(255,255,255,.72);--glass-b:rgba(255,255,255,.75);--glass-edge:rgba(20,54,90,.10);
+  --gshadow:inset 0 1px 0 rgba(255,255,255,.9),0 18px 40px -18px rgba(20,54,90,.35),0 2px 8px rgba(20,54,90,.06);
+  --surface:rgba(255,255,255,.5);--surface-2:rgba(20,54,90,.07);--line:rgba(20,54,90,.12);--bg:rgba(255,255,255,.66)}
+:root[data-theme="dark"]{--glass:rgba(22,40,66,.5);--glass-2:rgba(26,46,76,.72);--glass-b:rgba(255,255,255,.12);--glass-edge:rgba(255,255,255,.08);
+  --gshadow:inset 0 1px 0 rgba(255,255,255,.08),0 20px 44px -18px rgba(0,0,0,.7);--surface:rgba(255,255,255,.05);--surface-2:rgba(255,255,255,.08);--line:rgba(255,255,255,.1);--bg:rgba(20,36,60,.6)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--glass:rgba(22,40,66,.5);--glass-2:rgba(26,46,76,.72);--glass-b:rgba(255,255,255,.12);--glass-edge:rgba(255,255,255,.08);
+  --gshadow:inset 0 1px 0 rgba(255,255,255,.08),0 20px 44px -18px rgba(0,0,0,.7);--surface:rgba(255,255,255,.05);--surface-2:rgba(255,255,255,.08);--line:rgba(255,255,255,.1);--bg:rgba(20,36,60,.6)}}
+html{background:#F3F6FA}
+body{background:#F3F6FA;padding-bottom:84px}
+:root[data-theme="dark"] body{background:#0D1A2C}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) body{background:#0D1A2C}}
+@keyframes fl{50%{transform:translate3d(0,-26px,0)}}
+#siteH,#app,.foot{position:relative;z-index:1}
+.card,.pc,.calc-box,.qi,.side,.why4>div,.msg-wrap,.stepper-glass{background:var(--glass);-webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%);border:1px solid var(--glass-b);box-shadow:var(--gshadow);border-radius:18px}
+.card{transition:transform .25s ease, box-shadow .25s ease}
+@media (hover:hover){.card:hover,.pc:hover{transform:translateY(-3px)}}
+.card .card{background:var(--glass-2);box-shadow:none}
+.site-h{background:rgba(255,255,255,.55);-webkit-backdrop-filter:blur(20px) saturate(170%);backdrop-filter:blur(20px) saturate(170%);border-bottom:1px solid var(--glass-b)}
+:root[data-theme="dark"] .site-h{background:rgba(12,26,46,.55)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .site-h{background:rgba(12,26,46,.55)}}
+.site-h.dark{background:rgba(20,54,90,.82)}
+.btn{border-radius:12px;background:var(--glass-2);border:1px solid var(--glass-b);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 2px 6px rgba(20,54,90,.08);transition:transform .12s ease, box-shadow .12s ease, background .2s}
+.btn:hover{background:var(--glass-2);transform:translateY(-1px)}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:linear-gradient(180deg,#3A78B0,#2C6394 55%,#245680);border-color:#245680;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 4px 0 #1B4468,0 10px 22px -8px rgba(44,99,148,.7)}
+.btn.primary:hover{background:linear-gradient(180deg,#4284BF,#2F6AA0 55%,#285E8C)}
+.btn.primary:active{box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 1px 0 #1B4468,0 4px 10px -4px rgba(44,99,148,.6);transform:translateY(3px)}
+.btn.accent,.btn.white{background:linear-gradient(180deg,#E2C483,#C9A45F 55%,#B58F4A);border-color:#A9843F;color:#14365A;box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 4px 0 #8A6A2A,0 12px 24px -10px rgba(201,164,95,.9)}
+.btn.accent:hover,.btn.white:hover{background:linear-gradient(180deg,#EACD8E,#D0AC66 55%,#BC9651)}
+.btn.accent:active,.btn.white:active{box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 0 #8A6A2A;transform:translateY(3px)}
+.btn.ghost-w{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.35);box-shadow:inset 0 1px 0 rgba(255,255,255,.25);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.btn:disabled{transform:none}
+label.f input,label.f select,.cfg input,select{background:var(--glass-2);border:1px solid var(--glass-b);box-shadow:inset 0 1px 2px rgba(20,54,90,.08);border-radius:10px}
+/* hero */
+.hero{background:linear-gradient(135deg,#0F2A48 0%,#14365A 40%,#2C6394 100%);overflow:hidden;perspective:1400px}
+.hero::after{display:none}
+
+.hero-stack{position:relative;transform-style:preserve-3d}
+.hero-stack .ghost{position:absolute;inset:0;border-radius:22px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.hero-stack .g1{transform:translate3d(28px,26px,-60px) rotateY(-14deg) rotateX(8deg)}
+.hero-stack .g2{transform:translate3d(54px,52px,-120px) rotateY(-14deg) rotateX(8deg);opacity:.6}
+.hero-card{position:relative;border-radius:22px;background:rgba(255,255,255,.86);-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);border:1px solid rgba(255,255,255,.9);box-shadow:0 40px 80px -30px rgba(0,0,0,.6),inset 0 1px 0 #fff;transform:rotateY(-14deg) rotateX(8deg);transform-style:preserve-3d;transition:transform .5s ease}
+.hero-stack:hover .hero-card{transform:rotateY(-4deg) rotateX(3deg) translateZ(20px)}
+
+@keyframes bob{50%{transform:translateY(-10px)}}
+@media (max-width:900px){.hero-card,.hero-stack .ghost{transform:none}.hero-stack .ghost{display:none}}
+.hc-amt{background:linear-gradient(90deg,#14365A,#2C6394);-webkit-background-clip:text;background-clip:text;color:transparent}
+.band{background:#EAF0F6;border-top:1px solid var(--glass-b);border-bottom:1px solid var(--glass-b)}
+:root[data-theme="dark"] .band{background:rgba(255,255,255,.03)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .band{background:rgba(255,255,255,.03)}}
+.why4>div{padding:22px}
+.pc{border-radius:22px}
+.pc.feat{background:linear-gradient(160deg,rgba(255,255,255,.75),rgba(247,240,225,.7));border:1px solid rgba(201,164,95,.6);box-shadow:var(--gshadow),0 0 0 1px rgba(201,164,95,.35)}
+:root[data-theme="dark"] .pc.feat{background:linear-gradient(160deg,rgba(40,60,90,.6),rgba(70,58,30,.45))}
+.pstep{background:var(--glass);border:1px solid var(--glass-b);box-shadow:var(--gshadow);border-radius:18px;padding:20px 22px}
+.path{gap:16px}
+.pstep:not(:last-child)::after{right:-14px;top:36px;background:none}
+.pstep .num{background:linear-gradient(180deg,#D9B878,#8A6A2A);-webkit-background-clip:text;background-clip:text;color:transparent}
+.calc-out{background:linear-gradient(135deg,#14365A,#2C6394);box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 18px 30px -16px rgba(20,54,90,.8)}
+.cta{background:linear-gradient(135deg,#14365A,#2C6394 70%,#3A78B0);border-radius:26px;box-shadow:0 30px 60px -30px rgba(20,54,90,.8),inset 0 1px 0 rgba(255,255,255,.2);position:relative;overflow:hidden}
+
+.foot{background:linear-gradient(180deg,#14365A,#0D2440)}
+.why4 .wi,.side .wi{background:linear-gradient(180deg,#fff,#EAF1F8);box-shadow:inset 0 1px 0 #fff,0 6px 14px -6px rgba(44,99,148,.5)}
+/* app shells */
+.shell{gap:20px;padding:20px;grid-template-columns:250px minmax(0,1fr)}
+@media (max-width:900px){.shell{grid-template-columns:minmax(0,1fr);padding:12px}}
+.side{position:sticky;top:84px;align-self:start;padding:16px 10px;border-right:1px solid var(--glass-b)}
+@media (max-width:900px){.side{position:static;border-radius:14px}}
+.side.dark{background:linear-gradient(170deg,rgba(20,54,90,.92),rgba(13,36,64,.9));border-color:rgba(255,255,255,.12)}
+.mainp{background:var(--glass);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);border:1px solid var(--glass-b);box-shadow:var(--gshadow);border-radius:22px;padding:6px 10px 30px;max-width:none}
+.steps .st{border-top:0;position:relative;padding-top:12px}
+.steps .st::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;border-radius:5px;background:var(--surface-2)}
+.steps .st.done::before{background:linear-gradient(90deg,#C9A45F,#E2C483)}
+.steps .st.cur::before{background:linear-gradient(90deg,#2C6394,#5A97CF);box-shadow:0 0 12px rgba(44,99,148,.6)}
+.ic.ok{background:linear-gradient(180deg,#2BA877,#11845B);box-shadow:0 3px 8px -2px rgba(17,132,91,.6)}
+.ic.bad{background:linear-gradient(180deg,#E0466A,#C4103A)}
+.sn{box-shadow:inset 0 1px 0 rgba(255,255,255,.6)}
+.stage.done .sn{background:linear-gradient(180deg,#E2C483,#C9A45F)}
+.bar-o{background:var(--surface-2);height:9px}
+.bar-i{background:linear-gradient(90deg,#2C6394,#5A97CF);box-shadow:0 0 10px rgba(44,99,148,.4)}
+.lo.min .bar-i{background:linear-gradient(90deg,#C9A45F,#E2C483)}
+.fig.red{background:linear-gradient(90deg,#14365A,#2C6394);-webkit-background-clip:text;background-clip:text;color:transparent}
+:root[data-theme="dark"] .fig.red{background:linear-gradient(90deg,#8EC0EE,#D9B878);-webkit-background-clip:text;background-clip:text}
+.pill{background:var(--glass-2);border:1px solid var(--glass-b)}
+.pill.ok{background:var(--ok-bg);border-color:transparent}.pill.warn{background:var(--warn-bg);border-color:transparent}.pill.bad{background:var(--bad-bg);border-color:transparent}.pill.red{background:var(--info-bg);border-color:transparent}
+.bts{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--gold-ink);background:var(--gold-bg);border-radius:999px;padding:2px 9px;margin-left:8px;vertical-align:2px}
+.status-chip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;border-radius:999px;padding:3px 10px;white-space:nowrap}
+.status-chip.ok{background:var(--ok-bg);color:var(--ok)}.status-chip.run{background:var(--info-bg);color:var(--red-ink)}.status-chip.wait{background:var(--surface-2);color:var(--muted)}
+/* presenter notes */
+.why{background:linear-gradient(135deg,rgba(247,240,225,.75),rgba(255,255,255,.45));border:1px dashed rgba(201,164,95,.8);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-radius:14px;flex-direction:column;gap:4px}
+:root[data-theme="dark"] .why{background:rgba(70,58,30,.35)}
+.why .nlabel{font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--gold-ink);display:flex;gap:6px;align-items:center}
+.why svg{display:none}
+body.notes-off .why{display:none}
+/* dock + drawer + toast */
+.dock{background:rgba(16,28,48,.78);-webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%);border:1px solid rgba(255,255,255,.14);border-radius:18px}
+.dock select,.dock .seg,.dock .btn{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);box-shadow:none}
+.dock .btn:hover{background:rgba(255,255,255,.16);transform:none}
+.dock .seg button[aria-pressed="true"]{background:linear-gradient(180deg,#E2C483,#C9A45F)}
+.dock.min>*:not(.dl):not(#dockMin){display:none}
+.dock .dl{cursor:default}
+#dockMin{min-width:34px}
+.drawer{background:var(--glass-2);-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);border-left:1px solid var(--glass-b)}
+.toast{background:rgba(16,28,48,.88);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.14);color:#fff;border-radius:14px}
+/* mobile menu */
+.menu-btn{display:none;border:1px solid var(--glass-b);background:var(--glass-2);border-radius:10px;width:40px;height:40px;cursor:pointer;font-size:18px}
+@media (max-width:900px){.menu-btn{display:inline-grid;place-items:center}.sh-in .link{display:none}}
+.mnav{display:none}
+.mnav.open{display:flex;flex-direction:column;gap:2px;padding:8px 16px 14px}
+.mnav button{border:0;background:none;text-align:left;padding:10px 8px;font-weight:600;font-size:15px;border-radius:10px;cursor:pointer;color:var(--ink)}
+.mnav button:hover{background:var(--surface-2)}
+@media (min-width:901px){.mnav.open{display:none}}
+@media (max-width:640px){.dock{left:8px;right:8px;bottom:8px}}
+
+/* messages */
+.mlist{display:flex;flex-direction:column;gap:10px}
+.mi{display:grid;grid-template-columns:12px minmax(0,1fr) auto;gap:12px;align-items:start;text-align:left;width:100%;border:1px solid var(--glass-b);background:var(--glass-2);border-radius:14px;padding:14px 16px;cursor:pointer;box-shadow:var(--gshadow);transition:transform .15s ease}
+.mi:hover{transform:translateY(-2px)}
+.mi .ud{width:9px;height:9px;border-radius:50%;background:var(--gold);margin-top:6px}
+.mi.read .ud{background:transparent}
+.mi .ms{font-weight:600;font-size:15px}
+.mi.unread .ms{font-weight:800}
+.mi .mp{font-size:13.5px;color:var(--ink-2);margin-top:2px}
+.mi .mt{font-size:12px;color:var(--muted);white-space:nowrap;text-align:right}
+.chip{display:inline-block;font-size:11px;font-weight:700;border-radius:999px;padding:2px 8px;margin-top:6px}
+.chip.act{background:var(--gold-bg);color:var(--gold-ink)}.chip.upd{background:var(--info-bg);color:var(--red-ink)}.chip.pay{background:var(--ok-bg);color:var(--ok)}.chip.done{background:var(--surface-2);color:var(--muted)}
+.mview{padding:6px 6px 0}
+.mhead{border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:16px}
+.mhead h2{font-size:22px;margin:8px 0 6px}
+.mfrom{font-size:13px;color:var(--muted)}
+.mbody p{margin:0 0 12px;font-size:15px;line-height:1.6}
+.mcta{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.back{border:0;background:none;color:var(--red-ink);font-weight:700;cursor:pointer;padding:6px 0;font-size:14px}
+/* dashboard */
+.dgrid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
+.span3{grid-column:span 3}.span4{grid-column:span 4}.span5{grid-column:span 5}.span6{grid-column:span 6}.span7{grid-column:span 7}.span8{grid-column:span 8}.span12{grid-column:span 12}
+@media (max-width:1100px){.span3{grid-column:span 6}.span4,.span5,.span7,.span8{grid-column:span 12}.span6{grid-column:span 12}}
+@media (max-width:560px){.span3{grid-column:span 12}}
+.kpi .lbl{display:flex;justify-content:space-between;gap:8px}
+.kpi .fig{font-size:26px;margin-top:4px}
+.delta{font-size:12px;font-weight:700;border-radius:999px;padding:1px 7px}
+.delta.up{background:var(--ok-bg);color:var(--ok)}.delta.dn{background:var(--bad-bg);color:var(--bad)}
+.ctitle{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:10px}
+.ctitle h3{font-size:15px}
+.ctitle span{font-size:12px;color:var(--muted)}
+.ch svg{width:100%;height:auto;display:block;overflow:visible}
+.ch text{font-family:var(--font);fill:var(--muted);font-size:11px}
+.ch .gl{stroke:var(--line)}
+.leg{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--ink-2);margin-top:8px}
+.leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.live{background:linear-gradient(135deg,rgba(201,164,95,.18),rgba(44,99,148,.12));border:1px solid rgba(201,164,95,.5)}
+
+/* ===== r4: modals, liveness, mandate frame, profile, chat ===== */
+.modal-bg{position:fixed;inset:0;z-index:80;background:rgba(10,22,40,.45);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:grid;place-items:center;padding:16px}
+.modal{width:min(520px,100%);max-height:calc(100vh - 32px);overflow:auto;background:var(--glass-2);-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);border:1px solid var(--glass-b);box-shadow:0 40px 80px -30px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.6);border-radius:24px;padding:24px}
+:root[data-theme="dark"] .modal{background:rgba(20,36,60,.92)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .modal{background:rgba(20,36,60,.92)}}
+.modal h3{font-size:19px;font-weight:800}
+.modal .mx{float:right;border:0;background:var(--surface-2);width:32px;height:32px;border-radius:10px;cursor:pointer;font-size:15px;color:var(--ink)}
+.lv{display:grid;place-items:center;margin:18px auto 10px;position:relative;width:240px;height:240px}
+.lv svg.ring{position:absolute;inset:0;transform:rotate(-90deg)}
+.lv .cam{width:204px;height:204px;border-radius:50%;overflow:hidden;background:linear-gradient(180deg,#DCE7F3,#B9CDE3);display:grid;place-items:center;box-shadow:inset 0 0 0 3px rgba(255,255,255,.7)}
+.lv video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.lv .face{width:150px;height:170px}
+.face .head{transition:transform .5s ease}
+.face.left .head{transform:translateX(-16px) rotate(-6deg)}
+.face.right .head{transform:translateX(16px) rotate(6deg)}
+.face .eye{transform-box:fill-box;transform-origin:center;transition:transform .12s}
+.face.blink .eye{transform:scaleY(.1)}
+.lv-ins{text-align:center;font-weight:700;font-size:17px;min-height:26px}
+.lv-sub{text-align:center;font-size:13px;color:var(--muted);min-height:20px}
+.mrow{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:16px}
+.phone{width:300px;max-width:100%;margin:14px auto 4px;border-radius:34px;padding:12px;background:#0E1B2E;box-shadow:0 30px 60px -25px rgba(0,0,0,.7),inset 0 0 0 2px #26344A}
+.phone iframe{width:100%;height:470px;border:0;border-radius:24px;background:#fff;display:block}
+.fnote{text-align:center;font-size:12px;color:var(--muted);margin-top:8px}
+/* profile */
+.pf-card h3{font-size:16px;display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap}
+.pf-row{display:grid;grid-template-columns:170px minmax(0,1fr);gap:8px 16px;font-size:14px;padding:6px 0}
+.pf-row dt{color:var(--muted)}.pf-row dd{margin:0;font-weight:600}
+@media (max-width:560px){.pf-row{grid-template-columns:minmax(0,1fr)}}
+.pf-form{display:grid;gap:12px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.pf-card h3>span{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap}
+.risk{display:inline-block;font-size:11px;font-weight:700;border-radius:999px;padding:2px 8px;white-space:nowrap}
+.risk.lo{background:var(--ok-bg);color:var(--ok)}.risk.md{background:var(--warn-bg);color:var(--warn)}.risk.hi{background:var(--bad-bg);color:var(--bad)}
+.filechip{display:inline-flex;gap:8px;align-items:center;border:1px dashed var(--line);border-radius:10px;padding:8px 12px;font-size:13px;background:var(--glass-2)}
+.steps-mini{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.steps-mini span{font-size:12px;font-weight:700;border-radius:999px;padding:3px 10px;background:var(--surface-2);color:var(--muted)}
+.steps-mini span.on{background:var(--info-bg);color:var(--red-ink)}.steps-mini span.ok{background:var(--ok-bg);color:var(--ok)}
+/* chat */
+.chat-fab{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:62;border:0;border-radius:999px;padding:12px 18px 12px 14px;display:flex;align-items:center;gap:8px;font-weight:800;font-size:14.5px;cursor:pointer;color:#14365A;background:linear-gradient(180deg,#E2C483,#C9A45F 55%,#B58F4A);box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 4px 0 #8A6A2A,0 16px 30px -12px rgba(0,0,0,.45)}
+.chat-fab:active{transform:translateY(3px);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 0 #8A6A2A}
+.chat-fab .dotai{width:26px;height:26px;border-radius:50%;background:#14365A;color:#E2C483;display:grid;place-items:center;font-size:13px}
+body.trace-open .chat-fab,body.trace-open .chat{right:418px}
+@media (max-width:1100px){body.trace-open .chat-fab,body.trace-open .chat{right:18px}}
+.chat{position:fixed;right:18px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:63;width:380px;max-width:calc(100vw - 24px);height:min(560px,calc(100vh - 120px));display:flex;flex-direction:column;background:var(--glass-2);-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);border:1px solid var(--glass-b);border-radius:22px;box-shadow:0 30px 70px -25px rgba(0,0,0,.5);overflow:hidden}
+:root[data-theme="dark"] .chat{background:rgba(20,36,60,.94)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .chat{background:rgba(20,36,60,.94)}}
+.chat[hidden]{display:none}
+@media (max-width:640px){.chat{right:12px;left:12px;width:auto;bottom:84px}}
+.chat-h{display:flex;align-items:center;gap:10px;padding:14px 14px 12px;background:linear-gradient(135deg,#14365A,#2C6394);color:#fff}
+.chat-h b{display:block;font-size:15px}.chat-h span{font-size:12px;opacity:.8}
+.chat-h .ai{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.15);display:grid;place-items:center;color:#E2C483;font-weight:800}
+.chat-h button{margin-left:auto;border:0;background:rgba(255,255,255,.14);color:#fff;width:30px;height:30px;border-radius:9px;cursor:pointer}
+.chat-b{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.bub{max-width:86%;padding:10px 13px;border-radius:16px;font-size:14px;line-height:1.5;white-space:pre-wrap;word-wrap:break-word}
+.bub.u{align-self:flex-end;background:linear-gradient(180deg,#3A78B0,#2C6394);color:#fff;border-bottom-right-radius:5px}
+.bub.a{align-self:flex-start;background:var(--glass);border:1px solid var(--glass-b);border-bottom-left-radius:5px}
+.bub.a .src{display:block;font-size:11px;color:var(--muted);margin-top:6px}
+.bub.think{color:var(--muted);font-style:italic}
+.chips{display:flex;gap:6px;flex-wrap:wrap;padding:0 14px 8px}
+.chips button{border:1px solid var(--glass-b);background:var(--glass);border-radius:999px;padding:5px 10px;font-size:12.5px;font-weight:600;cursor:pointer;color:var(--ink)}
+.chat-f{display:flex;gap:8px;padding:10px 12px 12px;border-top:1px solid var(--line)}
+.chat-f input{flex:1;border:1px solid var(--glass-b);background:var(--bg);border-radius:12px;padding:10px 12px;font-size:14px;color:var(--ink)}
+.chat-f .btn{padding:8px 12px}
+.chat-err{font-size:12px;color:var(--bad);padding:0 14px 6px;min-height:0}
+</style>
+</head>
+<body>
+<header class="site-h" id="siteH"></header>
+<main id="app" aria-live="polite"></main>
+<aside class="drawer" id="drawer" aria-label="System trace">
+  <button class="xbtn" id="xTrace" aria-label="Close system trace">✕</button>
+  <div class="rail-h">
+    <h3>System trace</h3>
+    <div class="small muted">Every layer and integration call, as it happens</div>
+    <div class="layers" id="layers"></div>
+    <div class="spend">
+      <div><b id="sp-app">R 0</b><span>Third-party spend, this application</span></div>
+      <div><b id="sp-saved">R 0</b><span>Avoided by gating and reuse</span></div>
+    </div>
+  </div>
+  <div class="feed" id="feed"><div class="empty">Start onboarding to see the platform at work.</div></div>
+</aside>
+<div class="dock" role="region" aria-label="Demo controls">
+  <span class="dl">Demo</span>
+  <button class="btn small" id="dockMin" aria-label="Minimise demo controls" aria-expanded="true">–</button>
+  <select id="scn" aria-label="Scenario"></select>
+  <div class="seg" role="group" aria-label="View">
+    <button data-view="home" aria-pressed="true">Website</button>
+    <button data-view="client" aria-pressed="false">Client portal</button>
+    <button data-view="bo" aria-pressed="false">Back-office</button>
+  </div>
+  <button class="btn small" id="traceBtn" aria-pressed="false">System trace</button>
+  <button class="btn small" id="notesBtn" aria-pressed="true">Presenter notes</button>
+  <button class="btn small" id="reset">Restart</button>
+</div>
+<div class="toast hidden" id="toast" role="status"></div>
+<div id="modal"></div>
+<button class="chat-fab" id="chatFab" aria-expanded="false" aria-controls="chat"><span class="dotai">AI</span>Ask EPS</button>
+<section class="chat" id="chat" hidden aria-label="EPS assistant">
+  <div class="chat-h"><span class="ai">AI</span><div><b>EPS Assistant</b><span id="chatMode">Ask about loans, your application or your account</span></div><button id="chatX" aria-label="Close chat">✕</button></div>
+  <div class="chat-b" id="chatB" aria-live="polite"></div>
+  <div class="chips" id="chatChips"></div>
+  <div class="chat-err" id="chatErr"></div>
+  <form class="chat-f" id="chatF"><input id="chatIn" autocomplete="off" placeholder="Type your question…" aria-label="Your question"><button class="btn primary" id="chatSend" type="submit">Send</button><button class="btn hidden" id="chatStop" type="button">Stop</button></form>
+</section>
+
+<script>
+(function(){
+"use strict";
+/* ---------------- helpers ---------------- */
+const $ = s => document.querySelector(s);
+const fmtR = new Intl.NumberFormat("en-ZA",{style:"currency",currency:"ZAR",maximumFractionDigits:0});
+const R = n => fmtR.format(Math.round(n)).replace(/\u00a0/g," ");
+const R2 = n => new Intl.NumberFormat("en-ZA",{style:"currency",currency:"ZAR",minimumFractionDigits:2,maximumFractionDigits:2}).format(n).replace(/\u00a0/g," ");
+const pct = (n,d=2) => n.toFixed(d)+"%";
+const clamp = (v,a,b) => Math.max(a,Math.min(b,v));
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function rng(seed){let s=seed;return()=>{s=(s*16807)%2147483647;return (s-1)/2147483646;}}
+const clock = () => new Date().toLocaleTimeString("en-ZA",{hour12:false});
+const ICON_INFO = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>';
+
+/* ---------------- scenarios ---------------- */
+const SCENARIOS = {
+  clean:{ label:"Ubuntu Freight Logistics: straight-through approval",
+    company:"Ubuntu Freight Logistics (Pty) Ltd", reg:"2018/412557/07", sector:"Transport & logistics", sectorRisk:"Medium", years:7,
+    applicant:"Thandeka Dlamini", applicantId:"8805140623085", email:"thandeka@ubuntufreight.co.za", mobile:"082 555 0142",
+    directors:["Thandeka Dlamini","Bongani Dlamini"], bank:"FNB Business ·· 4471",
+    bureau:{score:78, debtReview:false, judgments:0}, idFlag:false,
+    fin:{rev:480000, vol:.09, expRatio:.72, debt:35000, returns:0, negDays:0, injections:[0,0,0,60000,0,0,0,0,0,0,0,0], loanIn:[0,0,0,0,0,0,0,0,0,0,0,0], seed:11},
+    req:{amount:600000, tenor:12, purpose:"Working capital for a new retail distribution contract"} },
+  refer:{ label:"Mokoena Build & Civils: risk-adjusted referral",
+    company:"Mokoena Build & Civils (Pty) Ltd", reg:"2020/118934/07", sector:"Construction", sectorRisk:"High", years:6,
+    applicant:"Kagiso Mokoena", applicantId:"8207215231082", email:"kagiso@mokoenabuild.co.za", mobile:"073 555 0198",
+    directors:["Kagiso Mokoena","Refilwe Mokoena"], bank:"Absa Business ·· 9023",
+    bureau:{score:70, debtReview:false, judgments:0}, idFlag:true,
+    fin:{rev:380000, vol:.24, expRatio:.74, debt:22000, returns:2, negDays:6, injections:[0,45000,0,0,0,0,30000,0,0,0,0,0], loanIn:[0,0,0,0,0,150000,0,0,0,0,0,0], seed:29},
+    req:{amount:750000, tenor:12, purpose:"Equipment and materials for a municipal paving contract"} },
+  stop:{ label:"Apex General Traders: hard-stop decline",
+    company:"Apex General Traders (Pty) Ltd", reg:"2016/077310/07", sector:"Wholesale trade", sectorRisk:"Medium", years:9,
+    applicant:"Johan van Wyk", applicantId:"7603035087089", email:"johan@apextraders.co.za", mobile:"083 555 0110",
+    directors:["Johan van Wyk"], bank:"Nedbank Business ·· 3308",
+    bureau:{score:41, debtReview:true, judgments:1}, idFlag:false,
+    fin:{rev:260000, vol:.15, expRatio:.8, debt:40000, returns:1, negDays:3, injections:Array(12).fill(0), loanIn:Array(12).fill(0), seed:5},
+    req:{amount:400000, tenor:9, purpose:"Stock purchase ahead of the festive season"} }
+};
+const MONTHS = ["Oct 25","Nov 25","Dec 25","Jan 26","Feb 26","Mar 26","Apr 26","May 26","Jun 26","Jul 26","Aug 26","Sep 26"];
+const SEASON = [.02,.08,.12,-.14,-.06,.03,-.02,.01,-.04,.0,.03,.05];
+
+const LAYERS = ["Client Portal","Workflow","KYC/FICA orchestration","Rules engine","Open Banking","Documents & e-sign","DebiCheck","Loan Booking","Loan Management","Xero","Notifications","Audit"];
+
+/* ---------------- state ---------------- */
+const DEFAULT_CFG = () => ({version:"1.0", rcr:1.25, wBureau:30, wAfford:30, wBehav:25, wEnv:15, turnoverPct:20, baseRate:10.75, mA:4, mB:7, mC:10, cap:28, initFeePct:1.5, svcFee:69, productMax:2000000, productMin:50000});
+let S, BO;
+function freshApp(){ return {id:"APP-"+(1040+Math.floor(Math.random()*900)), step:"onboard", checks:[], verified:false, consent:false,
+  req:null, bank:null, engine:null, offer:null, accepted:false, signed:false, mandate:"none", avs:false, surety:false,
+  status:"Draft", sysMs:0, timer:null, appSpend:0, saved:0, loan:null, bookedPayload:null, busy:false }; }
+function init(keepBO){
+  const key = $("#scn").value || "clean";
+  S = { key, sc: JSON.parse(JSON.stringify(SCENARIOS[key])), pf:{edit:null, addr:"14 Main Road, Kempton Park, 1619", addrSt:"Verified", pendingBank:null, bankSt:null}, nav:"apply", view: S?S.view:"home", nav:"apply", account:"Not registered", app: freshApp(), msgs:[], feed:[], layersUsed:new Set(), reuse:false };
+  if(BO) BO.queue=BO.queue.filter(x=>x.done);
+  if(!keepBO || !BO) BO = { tab:"dash", period:"12m", user:"maker", cfg:DEFAULT_CFG(), pending:null, audit:[], kpi:{apps:0,stp:0,referred:0,declined:0,disbursed:0,spend:0,saved:0}, queue:[] };
+  $("#feed").innerHTML='<div class="empty">Start onboarding to see the platform at work.</div>';
+  updateSpend(); renderLayers(); render();
+}
+
+/* ---------------- trace & audit ---------------- */
+function log(layer, msg, opt={}){
+  const e = {t:clock(), layer, msg, cost:opt.cost||0, kind:opt.kind||(layer==="Rules engine"?"eng":["KYC/FICA orchestration","Open Banking","DebiCheck","Loan Booking","Loan Management","Xero"].includes(layer)?"ext":""), provider:opt.provider, payload:opt.payload, ok:opt.ok};
+  S.feed.unshift(e); S.layersUsed.add(layer);
+  if(e.cost){ S.app.appSpend+=e.cost; BO.kpi.spend+=e.cost; }
+  if(opt.saved){ S.app.saved+=opt.saved; BO.kpi.saved+=opt.saved; }
+  BO.audit.unshift({t:e.t, app:S.app.id, actor:opt.actor||(["Client Portal"].includes(layer)?S.sc.applicant:"System"), layer, event:msg});
+  hot(layer); renderFeed(); updateSpend();
+}
+function hot(layer){ renderLayers(layer); clearTimeout(hot._t); hot._t=setTimeout(()=>renderLayers(),900); }
+function renderLayers(h){ $("#layers").innerHTML = LAYERS.map(l=>`<span class="ly ${l===h?"hot":S&&S.layersUsed.has(l)?"used":""}">${l}</span>`).join(""); }
+function renderFeed(){
+  $("#feed").innerHTML = S.feed.map(e=>`<div class="ev"><div class="ev-h"><span class="tag ${e.ok?"ok":e.kind}">${esc(e.layer)}</span>${e.provider?`<span class="xs muted">${esc(e.provider)}</span>`:""}<span class="ev-t">${e.t}</span></div>
+  <div class="ev-m">${esc(e.msg)}${e.cost?` <span class="ev-c">· ${R2(e.cost)}</span>`:""}</div>
+  ${e.payload?`<details class="payload"><summary>View API payload</summary><pre>${esc(JSON.stringify(e.payload,null,2))}</pre></details>`:""}</div>`).join("");
+}
+function updateSpend(){ $("#sp-app").textContent=R2(S?S.app.appSpend:0); $("#sp-saved").textContent=R2(S?S.app.saved:0); }
+function first(){ return S.sc.applicant.split(" ")[0]; }
+function dstr(d){ return d.toLocaleDateString("en-ZA",{day:"numeric",month:"short",year:"numeric"}); }
+function notify(o){
+  const m=Object.assign({id:"m"+Date.now()+Math.floor(Math.random()*999), t:clock(), date:dstr(new Date()), app:S.app.id, read:false, details:[], kind:"upd"}, o);
+  S.msgs.unshift(m);
+  log("Notifications","Email + SMS sent: "+m.subject);
+  return m;
+}
+function msgDone(m){
+  const a=S.app;
+  if(m.key==="verified") return !!a.req || a.step!=="onboard";
+  if(m.app!==a.id) return true;
+  switch(m.key){
+    case "request": return !!a.consent;
+    case "referred": return !!a.referApproved;
+    case "offer": case "saved": return !!a.accepted;
+    case "accepted": return !!a.signed;
+    case "signed": return a.mandate==="ok";
+    case "surety": return !!a.surety;
+    case "final": return !!a.loan;
+    case "missed": return !(a.offer&&a.offer.sched.some(x=>x.status==="Missed"));
+    default: return false;
+  }
+}
+function toast(m){ const t=$("#toast"); t.textContent=m; t.classList.remove("hidden"); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.add("hidden"),3200); }
+
+/* system-time stopwatch (client time excluded) */
+function tStart(){ const a=S.app; if(a.timer) return; a.timer=performance.now(); tick(); }
+function tPause(){ const a=S.app; if(!a.timer) return; a.sysMs+=performance.now()-a.timer; a.timer=null; }
+function tElapsed(){ const a=S.app; return a.sysMs + (a.timer?performance.now()-a.timer:0); }
+function fmtT(ms){ const s=Math.floor(ms/1000); return Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); }
+function tick(){ const el=document.getElementById("tmr"); if(el) el.textContent=fmtT(tElapsed()); if(S.app.timer) requestAnimationFrame(tick); }
+
+/* ---------------- financial model ---------------- */
+function buildBank(sc){
+  const r=rng(sc.fin.seed*7919+3), f=sc.fin;
+  return MONTHS.map((m,i)=>{
+    const op = f.rev*(1+SEASON[i]*(f.vol>.2?2.2:1))*(1+(r()-.5)*f.vol*1.6);
+    const transfers = 20000+r()*40000;
+    const exp = op*f.expRatio*(1+(r()-.5)*.06);
+    const sars = op*.045;
+    return {m, op, transfers, inj:f.injections[i], loan:f.loanIn[i], exp, sars, debt:f.debt, txns:Math.round(180+op/2600+r()*40)};
+  });
+}
+function pmt(P, annual, n){ const i=annual/1200; return P*i/(1-Math.pow(1+i,-n)); }
+function pv(A, annual, n){ const i=annual/1200; return A*(1-Math.pow(1+i,-n))/i; }
+function runEngine(sc, req, bank, cfg){
+  const ops=bank.map(b=>b.op), avgRev=ops.reduce((a,b)=>a+b,0)/12, annual=avgRev*12;
+  const sd=Math.sqrt(ops.reduce((a,b)=>a+(b-avgRev)**2,0)/12), cv=sd/avgRev;
+  const avgExp=bank.reduce((a,b)=>a+b.exp+b.sars,0)/12;
+  const fcf=avgRev-avgExp-sc.fin.debt;
+  const provisionalRate=cfg.baseRate+cfg.mB;
+  const instReq=pmt(req.amount,provisionalRate,req.tenor);
+  const rcrReq=fcf/instReq;
+  const s = {
+    bureau: clamp(sc.bureau.score,0,100),
+    afford: clamp((rcrReq-1)/1.0*100,0,100),
+    behav: clamp(100-cv*100-sc.fin.returns*10-sc.fin.negDays*1.2,0,100),
+    env: clamp(Math.min(sc.years,10)*6+({Low:40,Medium:28,High:12}[sc.sectorRisk]),0,100)
+  };
+  const wsum=cfg.wBureau+cfg.wAfford+cfg.wBehav+cfg.wEnv;
+  const wacrm=(s.bureau*cfg.wBureau+s.afford*cfg.wAfford+s.behav*cfg.wBehav+s.env*cfg.wEnv)/wsum;
+  const grade = wacrm>=72?"A":wacrm>=58?"B":wacrm>=40?"C":"D";
+  const reasons=[], adj=[];
+  // risk adjustments
+  let tenor=req.tenor, priceAdj=0, limitCut=0, refer=false;
+  if(sc.sectorRisk==="High" && sc.fin.returns>=2){ limitCut=.2; tenor=Math.min(tenor,6); priceAdj+=2; refer=true;
+    adj.push({code:"RA-SEC-03",t:"High sector risk combined with 2+ returned debit orders: limit reduced 20%, tenor capped at 6 months, pricing +2.00%, referred for credit review"}); }
+  if(cv>.2){ adj.push({code:"RA-VOL-01",t:`Revenue volatility ${pct(cv*100,0)} above 20% threshold: flagged as an early-warning indicator on the facility`}); }
+  if(sc.fin.loanIn.some(v=>v>0)) reasons.push({code:"FD-LNP-02",t:"Loan proceeds identified in inflows and excluded from verified revenue"});
+  if(sc.fin.injections.some(v=>v>0)) reasons.push({code:"FD-OWN-01",t:"Owner injections identified and excluded from verified revenue"});
+  const margin = {A:cfg.mA,B:cfg.mB,C:cfg.mC,D:cfg.mC+4}[grade];
+  const rate = Math.min(cfg.baseRate+margin+priceAdj, cfg.cap);
+  const maxInst = fcf/cfg.rcr;
+  const limits = [
+    {k:"Requested amount", v:req.amount},
+    {k:"Affordability (RCR ≥ "+cfg.rcr.toFixed(2)+"x)", v:Math.max(0,pv(maxInst,rate,tenor))},
+    {k:"Risk-grade limit ("+grade+")", v:annual*({A:.25,B:.2,C:.12,D:0}[grade])},
+    {k:"Turnover ("+cfg.turnoverPct+"% of verified revenue)", v:annual*cfg.turnoverPct/100},
+    {k:"Product maximum", v:cfg.productMax}
+  ];
+  let lowest = limits.reduce((a,b)=>b.v<a.v?b:a);
+  let approved = lowest.v*(1-limitCut);
+  approved = Math.floor(approved/5000)*5000;
+  let decision = "approve";
+  if(grade==="D"||approved<cfg.productMin){ decision="decline"; reasons.push({code:"CR-GRD-09",t:"Weighted risk grade or approvable amount below product minimum"}); }
+  else if(refer) decision="refer";
+  if(approved<req.amount && decision!=="decline") reasons.unshift({code:"LM-LOW-01",t:`Limit set by the lower-of rule: ${lowest.k}${limitCut?", less the 20% risk adjustment":""}`});
+  if(tenor<req.tenor) reasons.push({code:"TN-ADJ-02",t:`Tenor shortened from ${req.tenor} to ${tenor} months`});
+  reasons.push({code:"AF-RCR-00",t:`Free cash flow ${R(fcf)}/month; repayment capacity on the offer ${ (fcf/pmt(Math.max(approved,1),rate,tenor)).toFixed(2)}x`});
+  return {avgRev, annual, cv, avgExp, fcf, s, wacrm, grade, rate, tenor, limits, lowest, limitCut, approved, decision, reasons, adj, cfgVersion:cfg.version, instReq, rcrReq};
+}
+function makeOffer(e, cfg){
+  const P=e.approved, n=e.tenor, rate=e.rate, inst=pmt(P,rate,n), fee=Math.min(P*cfg.initFeePct/100, 6040+ (P>10000?0:0));
+  let bal=P; const sched=[];
+  const start=new Date(2026,10,1);
+  for(let k=1;k<=n;k++){ const int=bal*rate/1200, prin=inst-int; bal=Math.max(0,bal-prin);
+    const d=new Date(start.getFullYear(), start.getMonth()+k-1, 1);
+    sched.push({k, date:d.toLocaleDateString("en-ZA",{day:"2-digit",month:"short",year:"numeric"}), inst:inst+cfg.svcFee, int, prin, bal, status:"Scheduled"}); }
+  const totalRepay = inst*n + cfg.svcFee*n + fee;
+  return {P, n, rate, inst:inst+cfg.svcFee, fee, svc:cfg.svcFee, totalRepay, costOfCredit: totalRepay-P, sched, expires:"7 days"};
+}
+
+/* ---------------- client portal render ---------------- */
+const STEPS=[["onboard","Register & onboard"],["request","Loan request"],["assess","Credit & affordability"],["offer","Pricing & offer"],["execute","Legals & disbursement"],["monitor","Monitoring & collections"]];
+function why(html){ return `<div class="why"><div class="nlabel">✦ PRESENTER NOTE · HIDDEN FROM REAL CLIENTS</div><div>${html}</div></div>`; }
+const BTS='<span class="bts">Behind the scenes</span>';
+function logo(){ return `<img class="eps-logo logo-l" src="data:image/png;base64,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" alt="EPS Early Payment System"><img class="eps-logo logo-d" src="data:image/png;base64,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" alt="EPS Early Payment System">`; }
+function header(){
+  const h=$("#siteH");
+  if(S.view==="home"){ h.className="site-h"; h.innerHTML=`<div class="sh-in"><button class="logo" data-view="home">${logo()}</button>
+    <nav class="nav"><button data-scroll="products">Business loans</button><button data-scroll="products">Invoice discounting</button><button data-scroll="how">How it works</button><button data-scroll="calc">Calculator</button><button data-scroll="contact">Contact</button></nav>
+    <div class="sh-sp"></div><button class="link" data-view="client">Log in</button><button class="btn accent" data-view="client">Apply now</button><button class="menu-btn" data-act="menu" aria-label="Menu" aria-expanded="${!!S.menu}">☰</button></div>
+    <nav class="mnav ${S.menu?"open":""}"><button data-scroll="products">Business loans</button><button data-scroll="products">Invoice discounting</button><button data-scroll="how">How it works</button><button data-scroll="calc">Calculator</button><button data-scroll="contact">Contact</button><button data-view="client">Log in</button></nav>`; }
+  else if(S.view==="client"){ const ini=S.sc.applicant.split(" ").map(x=>x[0]).join(""); h.className="site-h"; h.innerHTML=`<div class="sh-in wide"><button class="logo" data-view="home">${logo()}</button><span class="small muted">Business portal</span>
+    <div class="sh-sp"></div>${S.account==="Not registered"?`<span class="small muted">New application</span>`:`<div class="row" style="gap:10px"><div class="avatar">${ini}</div><div class="small" style="line-height:1.25"><b>${esc(S.sc.applicant)}</b><br><span class="muted">${esc(S.sc.company)}</span></div></div>`}<button class="link" data-view="home">Log out</button></div>`; }
+  else { h.className="site-h dark"; h.innerHTML=`<div class="sh-in wide"><button class="logo" data-view="home">${logo()}</button><span class="small" style="color:#B9C4D6">Staff console</span><div class="sh-sp"></div>
+    <div class="seg" role="group" aria-label="Signed-in user" style="background:rgba(255,255,255,.08);border-color:transparent"><button data-user="maker" aria-pressed="${BO.user==="maker"}" style="color:#fff">Lerato N. · Credit analyst</button><button data-user="checker" aria-pressed="${BO.user==="checker"}" style="color:#fff">Sipho M. · Credit manager</button></div></div>`;
+    h.querySelectorAll("[data-user]").forEach(b=>{ if(b.getAttribute("aria-pressed")==="true"){b.style.background="#C9A45F";b.style.color="#14365A";b.style.outline="0";} }); }
+}
+let lastView;
+function render(){
+  document.querySelectorAll(".dock [data-view]").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.view===S.view)));
+  header();
+  $("#app").innerHTML = S.view==="home" ? renderHome() : S.view==="client" ? shellClient() : shellBO();
+  if(lastView!==S.view){ window.scrollTo(0,0); lastView=S.view; }
+  if(S.view==="home") calcUpdate();
+  tick();
+}
+const I={
+  bolt:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>',
+  eye:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+  lock:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
+  shield:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>'
+};
+let calcState={amt:500000,ten:12};
+function calcUpdate(){ const o=$("#calcOut"); if(!o) return; const c=BO.cfg, r=c.baseRate+c.mA;
+  const inst=pmt(calcState.amt,r,calcState.ten)+c.svcFee;
+  $("#calcAmtL").textContent=R(calcState.amt);
+  o.innerHTML=`<div class="small" style="color:#B9C4D6">Monthly instalment from</div><div class="big">${R(inst)}</div><div class="small" style="color:#B9C4D6;margin-top:6px">Over ${calcState.ten} months at ${pct(r)} per year, including a ${R(c.svcFee)} monthly service fee. Indicative only: your rate depends on your risk assessment.</div>`;
+  document.querySelectorAll("[data-ten]").forEach(b=>b.setAttribute("aria-pressed",String(+b.dataset.ten===calcState.ten)));
+}
+function renderHome(){
+  return `<section class="hero"><div class="hero-in"><div>
+    <span class="badge"><b>New</b>Business term loans from EPS</span>
+    <h1>Business funding, decided in minutes.</h1>
+    <p class="lead">Borrow from R50,000 to R2 million over 3 to 12 months. Verify your business once, connect your bank account, and get a risk-based offer with every cost shown upfront.</p>
+    <div class="row"><button class="btn accent lg" data-view="client">Apply now</button><button class="btn ghost-w lg" data-scroll="how">See how it works</button></div>
+    <div class="small" style="color:#9FB0CC;margin-top:22px">Accelerate cashflow. Ignite success.</div></div>
+    <div class="hero-stack"><div class="ghost g2"></div><div class="ghost g1"></div><div class="hero-card" aria-label="Example offer"><div class="hc-top"><span>Example offer</span><span class="ok-chip">Approved</span></div>
+      <div class="hc-amt">R 600 000</div><div style="font-size:13px;color:#76767F;margin-bottom:12px">Short-term business loan</div>
+      <div class="hc-row"><span>Term</span><span>12 months</span></div><div class="hc-row"><span>Repayment</span><span>Monthly via DebiCheck</span></div><div class="hc-row"><span>Early settlement penalty</span><span>None</span></div><div class="hc-row"><span>Funds paid</span><span>Once conditions are met</span></div>
+      <button class="btn accent" data-view="client" style="width:100%;margin-top:14px">Check what you qualify for</button></div></div>
+  </div></section>
+
+  <section class="sec" id="products"><h2>Working capital, the way your business needs it</h2><p class="sub">EPS already turns verified invoices into cash within 24 hours. Now you can also borrow directly against your business's cash flow.</p>
+  <div class="prod">
+    <div class="pc feat"><span class="tagn">New</span><h3>Business term loans</h3><p>A fixed amount, repaid monthly. Priced on your business's real cash flow, not just its paperwork.</p><ul><li>R50,000 to R2 million</li><li>3, 6, 9 or 12 months</li><li>Offer in minutes for eligible businesses</li></ul><button class="btn accent" data-view="client" style="margin-top:8px">Apply now</button></div>
+    <div class="pc"><h3>Invoice discounting</h3><p>Get paid early on approved invoices from anchor corporates, with funds in your account within 24 hours.</p><ul><li>Submit an approved invoice</li><li>We verify it with your customer</li><li>Early payment within 24 hours</li></ul><button class="btn" style="margin-top:8px" data-act="invoiceInfo">Find out more</button></div>
+    <div class="pc"><h3>Purchase order and contract funding</h3><p>Funding to deliver on large orders and contracts, provided through our parent company, Trade Capital Finance.</p><ul><li>Purchase order funding</li><li>Contract funding</li><li>Working-capital finance</li></ul><button class="btn" style="margin-top:8px" data-scroll="contact">Talk to us</button></div>
+  </div></section>
+
+  <div class="band" id="how"><section class="sec"><h2>The path to funding</h2><p class="sub">Five steps, most of them automatic. You only do onboarding once: your next application starts at step two.</p>
+  <div class="path">${[["Register and verify","Create your account. We confirm your company with CIPC and your identity with Home Affairs."],["Request funding","Tell us how much you need, for how long, and what it's for."],["Instant assessment","Connect your bank account, read-only. We assess 12 months of cash flow in minutes."],["Accept your offer","See your limit, rate, fees, instalment and total cost before you commit."],["Sign and get paid","Sign electronically, approve your DebiCheck mandate, and we pay out."]].map((x,i)=>`<div class="pstep"><div class="num">0${i+1}</div><h4>${x[0]}</h4><p>${x[1]}</p></div>`).join("")}</div></section></div>
+
+  <section class="sec" id="calc"><div class="calc"><div><h2>What would your repayments be?</h2><p class="sub">Move the slider to see an indicative monthly instalment. Your actual rate is set by your risk assessment and is shown in full before you accept.</p></div>
+  <div class="calc-box"><div class="row" style="justify-content:space-between"><span class="small" style="font-weight:600">Loan amount</span><b id="calcAmtL" style="font-size:20px"></b></div>
+    <input type="range" id="calcAmt" min="50000" max="2000000" step="10000" value="${calcState.amt}" aria-label="Loan amount">
+    <div class="row xs muted" style="justify-content:space-between"><span>R 50 000</span><span>R 2 000 000</span></div>
+    <div class="small" style="font-weight:600;margin-top:16px">Term</div><div class="tenors">${[3,6,9,12].map(t=>`<button data-ten="${t}">${t} months</button>`).join("")}</div>
+    <div class="calc-out" id="calcOut"></div></div></div></section>
+
+  <div class="band"><section class="sec"><h2>Built for how SMMEs actually work</h2>
+  <div class="why4"><div><div class="wi">${I.bolt}</div><h4>Verify once</h4><p>Your verified details stay on your account, so repeat applications skip onboarding.</p></div>
+  <div><div class="wi">${I.eye}</div><h4>Every cost upfront</h4><p>Rate, fees, instalments and total cost of credit before you sign. No early settlement penalty.</p></div>
+  <div><div class="wi">${I.lock}</div><h4>Your data, protected</h4><p>Read-only bank access with your consent, processed in line with POPIA.</p></div>
+  <div><div class="wi">${I.shield}</div><h4>Backed by TCF</h4><p>EPS is a wholly owned subsidiary of Trade Capital Finance, a registered credit provider.</p></div></div></section></div>
+
+  <section class="sec"><div class="cta"><div><h2 style="font-size:30px">Ready to grow?</h2><div style="opacity:.9;margin-top:6px">Most eligible businesses see an offer in under five minutes.</div></div><button class="btn white lg" data-view="client">Start your application</button></div></section>
+
+  <footer class="foot" id="contact"><div class="foot-in"><div><div style="color:#fff">${logo()}</div><p style="margin:14px 0 0;max-width:34ch">A next-generation fintech platform helping South African SMMEs access working capital faster. A wholly owned subsidiary of Trade Capital Finance.</p></div>
+  <div><h5>Products</h5><button class="fl" data-view="client">Business term loans</button><button class="fl" data-scroll="products">Invoice discounting</button><button class="fl" data-scroll="products">Purchase order funding</button></div>
+  <div><h5>Company</h5><button class="fl" data-scroll="how">How it works</button><button class="fl" data-view="bo">Staff login</button><button class="fl" data-scroll="calc">Loan calculator</button></div>
+  <div><h5>Contact</h5><a href="tel:+27100130453">010 013 0453</a><a href="mailto:clientservice@earlypaymentsystem.co.za">clientservice@earlypaymentsystem.co.za</a><span style="display:block;margin-top:6px">16 Fricker Road, Sandton, 2196</span></div></div>
+  <div class="foot-b"><span>© 2026 Early Payment System (Pty) Ltd. Demonstration environment: all applicants and figures are fictitious.</span><span>Prototype by Mphoti Consulting</span></div></footer>`;
+}
+function docsList(){ const a=S.app, d=[];
+  if(a.verified||S.reuse) d.push(["CIPC company record","Verified automatically"],["Director identity verification","Verified with Home Affairs"]);
+  if(a.bank) d.push(["Bank statements, 12 months","Retrieved via Open Banking"]);
+  if(a.offer) d.push(["Pre-agreement quote","Generated with your offer"]);
+  if(a.signed) d.push(["Business term loan agreement","Signed electronically"]);
+  if(a.surety) d.push(["Director suretyship","Uploaded"]);
+  if(a.loan) d.push(["Repayment schedule "+a.loan.loanId,"Issued at disbursement"]);
+  return d; }
+function shellClient(){
+  const msgs=S.msgs, unread=msgs.filter(m=>!m.read).length;
+  const items=[["apply","Loan application"],["msgs","Messages",unread],["docs","Documents"],["profile","My profile"],["help","Help and contact"]];
+  let body;
+  if(S.nav.startsWith("msg:")) body=msgView(S.nav.slice(4));
+  else if(S.nav==="msgs") body=msgList();
+  else if(false) body=`<div class="ph"><h2>Messages</h2></div><div class="pad">${msgs.length?msgs.map(m=>`<div class="msg"><b>${esc(m.msg.replace(/^[^:]+:\s*/,"").replace(/^'|'$/g,""))}</b><span class="xs muted">${m.t} · ${esc(m.msg.split(":")[0])}</span></div>`).join(""):`<div class="empty">No messages yet. Updates about your application arrive here and by email and SMS.</div>`}</div>`;
+  else if(S.nav==="docs"){ const d=docsList(); body=`<div class="ph"><h2>Documents</h2></div><div class="pad">${d.length?`<div class="tbl-w"><table><thead><tr><th>Document</th><th>Status</th></tr></thead><tbody>${d.map(x=>`<tr><td><b>${x[0]}</b></td><td class="muted">${x[1]}</td></tr>`).join("")}</tbody></table></div>`:`<div class="empty">Your verified documents and agreements will appear here.</div>`}</div>`; }
+  else if(S.nav==="help") body=`<div class="ph"><h2>Help and contact</h2></div><div class="pad stack"><div class="card"><b>Client service</b><div class="small" style="margin-top:6px">010 013 0453 · clientservice@earlypaymentsystem.co.za<br>Monday to Friday, 08:00 to 17:00</div></div><div class="card"><b>Disputing a credit bureau record</b><div class="small" style="margin-top:6px">If a decision was based on a bureau record you believe is wrong, you can dispute it directly with the bureau free of charge.</div></div></div>`;
+  else if(S.nav==="profile") body=profileView();
+  else body=renderClient();
+  return `<div class="shell"><nav class="side"><div class="side-lbl">My business</div>${items.map(i=>`<button data-nav="${i[0]}" aria-current="${S.nav===i[0]||(i[0]==="msgs"&&S.nav.startsWith("msg:"))}">${i[1]}${i[2]?`<span class="cnt">${i[2]}</span>`:""}</button>`).join("")}</nav><section class="mainp">${body}</section></div>`;
+}
+const CHIP={act:["act","Action needed"],upd:["upd","Update"],pay:["pay","Payment"]};
+function msgList(){
+  if(!S.msgs.length) return `<div class="ph"><h2>Messages</h2></div><div class="pad"><div class="empty">No messages yet. Updates about your application arrive here, and by email and SMS.</div></div>`;
+  return `<div class="ph"><div><h2>Messages</h2><div class="small muted" style="margin-top:4px">${S.msgs.filter(m=>!m.read).length} unread · also sent to ${esc(S.sc.email)} and ${esc(S.sc.mobile)}</div></div></div>
+  <div class="pad"><div class="mlist">${S.msgs.map(m=>{ const done=msgDone(m), c=done&&m.kind==="act"?["done","Done"]:CHIP[m.kind];
+    return `<button class="mi ${m.read?"read":"unread"}" data-open="${m.id}"><span class="ud"></span><span><span class="ms">${esc(m.subject)}</span><span class="mp" style="display:block">${esc(m.preview)}</span><span class="chip ${c[0]}">${c[1]}</span></span><span class="mt">${m.date}<br>${m.t.slice(0,5)}</span></button>`; }).join("")}</div></div>`;
+}
+
+function vfDates(){ const d=new Date(); const add=m=>{const x=new Date(d); x.setMonth(x.getMonth()+m); return dstr(x);}; return {today:dstr(d), cipc:add(12), id:add(24), bureau:(()=>{const x=new Date(d); x.setDate(x.getDate()+30); return dstr(x);})()}; }
+function profileView(){
+  const sc=S.sc, a=S.app, pf=S.pf, v=vfDates();
+  if(S.account!=="Onboarded") return `<div class="ph"><h2>My profile</h2></div><div class="pad"><div class="empty">Complete registration and verification first. Your verified details will then appear here, and you can update them at any time.</div><div class="row" style="justify-content:center"><button class="btn primary" data-nav="apply">Go to my application</button></div></div>`;
+  const ed=pf.edit;
+  const contact=`<div class="card pf-card"><h3><span>Contact details <span class="risk lo">OTP to confirm</span></span>${ed!=="contact"?`<button class="btn small" data-act="pfEdit" data-id="contact">Edit</button>`:""}</h3>
+    <dl class="pf-row"><dt>Email</dt><dd>${esc(sc.email)}</dd><dt>Mobile</dt><dd>${esc(sc.mobile)}</dd></dl>
+    ${ed==="contact"?`<div class="pf-form"><div class="grid2"><label class="f">New email<input id="pfEmail" value="${esc(sc.email)}"></label><label class="f">New mobile<input id="pfMobile" value="${esc(sc.mobile)}"></label></div>
+      ${pf.otp?`<label class="f">Code sent to your new number and email<input id="pfOtp" value="294 117"></label><div class="row"><button class="btn primary" data-act="pfContactSave">Verify and save</button><button class="btn" data-act="pfCancel">Cancel</button></div>`:`<div class="row"><button class="btn primary" data-act="pfOtp">Send verification code</button><button class="btn" data-act="pfCancel">Cancel</button></div>`}</div>`:""}</div>`;
+  const addr=`<div class="card pf-card"><h3><span>Business address <span class="risk md">Proof of address</span></span>${ed!=="addr"&&pf.addrSt!=="Checking"?`<button class="btn small" data-act="pfEdit" data-id="addr">Edit</button>`:""}</h3>
+    <dl class="pf-row"><dt>Address</dt><dd>${esc(pf.addr)}</dd><dt>Status</dt><dd>${pf.addrSt==="Verified"?'<span class="status-chip ok">✓ Verified</span>':'<span class="status-chip run">Checking your document…</span>'}</dd></dl>
+    ${ed==="addr"?`<div class="pf-form"><label class="f">New address<input id="pfAddr" value="7 Industry Street, Midrand, 1685"></label><div class="filechip">📎 Municipal_account_Aug2026.pdf <span class="muted">· 212 KB · attached</span></div><div class="row"><button class="btn primary" data-act="pfAddrSave">Submit for verification</button><button class="btn" data-act="pfCancel">Cancel</button></div></div>`:""}</div>`;
+  const bs=pf.bankSt, pb=pf.pendingBank;
+  const bank=`<div class="card pf-card"><h3><span>Settlement and debit account <span class="risk hi">High security</span></span>${!ed&&!bs?`<button class="btn small" data-act="pfEdit" data-id="bank">Change account</button>`:""}</h3>
+    <dl class="pf-row"><dt>Current account</dt><dd>${esc(sc.bank)}</dd>${a.loan?`<dt>DebiCheck mandate</dt><dd>Active on this account</dd>`:""}${bs?`<dt>Requested change</dt><dd>${esc(pb)}</dd><dt>Status</dt><dd>${bs==="Pending approval"?'<span class="status-chip run">Pending final approval</span>':'<span class="status-chip run">'+esc(bs)+'</span>'}</dd>`:""}</dl>
+    ${ed==="bank"?`<div class="pf-form"><div class="grid2"><label class="f">Bank<select id="pfBank">${["Absa","Capitec","FNB","Investec","Nedbank","Standard Bank","TymeBank"].map(b=>`<option>${b}</option>`).join("")}</select></label><label class="f">Account number<input id="pfAcc" value="62 1840 9935" inputmode="numeric"></label></div>
+      <div class="small muted">To protect you, changing this account needs a fresh selfie check and an account ownership check${a.loan?", and you'll approve an updated DebiCheck mandate in your banking app":""}. A team member confirms the change before it takes effect.</div>
+      <div class="steps-mini"><span>1 Selfie</span><span>2 Ownership check</span>${a.loan?"<span>3 Mandate</span>":""}<span>${a.loan?4:3} Approval</span></div>
+      <div class="row"><button class="btn primary" data-act="pfBankGo">Continue</button><button class="btn" data-act="pfCancel">Cancel</button></div></div>`:""}
+    ${pf.bankSteps?`<div class="steps-mini">${pf.bankSteps.map(x=>`<span class="${x[1]}">${x[1]==="ok"?"✓ ":""}${x[0]}</span>`).join("")}</div>`:""}</div>`;
+  const dirs=`<div class="card pf-card"><h3><span>Directors and ownership <span class="risk md">Re-checked with CIPC</span></span><button class="btn small" data-act="pfCipc">Report a change</button></h3>
+    <dl class="pf-row">${sc.directors.map(d=>`<dt>${esc(d)}</dt><dd>Director · identity verified</dd>`).join("")}<dt>Last CIPC check</dt><dd>${pf.cipcAt||v.today}</dd></dl></div>`;
+  const ver=`<div class="card pf-card"><h3>Verification status</h3><div class="tbl-w"><table><thead><tr><th>Check</th><th>Status</th><th>Valid until</th></tr></thead><tbody>
+    <tr><td>Company registration</td><td><span class="status-chip ok">✓ Confirmed</span></td><td>${v.cipc}</td></tr>
+    <tr><td>Director identities</td><td><span class="status-chip ok">✓ Verified</span></td><td>${v.id}</td></tr>
+    <tr><td>Selfie and liveness</td><td><span class="status-chip ok">✓ Verified</span></td><td>${v.id}</td></tr>
+    <tr><td>Business credit profile</td><td><span class="status-chip ok">✓ Received</span></td><td>${v.bureau}</td></tr></tbody></table></div>
+    <div class="small muted" style="margin-top:8px">We only re-check something when it expires or you change it, so repeat applications stay quick.</div></div>`;
+  return `<div class="ph"><div><h2>My profile</h2><div class="small muted" style="margin-top:4px">${esc(sc.company)} · ${esc(sc.reg)}</div></div></div>
+  <div class="pad stack">${why("<strong>Risk-based re-verification.</strong> Low-risk changes (contact details) need a one-time PIN. Medium-risk changes (address, directors) re-run the relevant check. High-risk changes (bank account) need a fresh liveness selfie, an account ownership check, a DebiCheck mandate amendment if a loan is active, and maker-checker approval in the back-office. Every change is audited and the client is notified on both old and new contact details.")}
+  ${contact}${addr}${bank}${dirs}${ver}</div>`;
+}
+function msgView(id){
+  const m=S.msgs.find(x=>x.id===id); if(!m) return msgList();
+  m.read=true;
+  const done=msgDone(m);
+  return `<div class="pad mview"><button class="back" data-nav="msgs">← Back to messages</button>
+  <div class="mhead"><span class="chip ${done&&m.kind==="act"?"done":CHIP[m.kind][0]}">${done&&m.kind==="act"?"Done":CHIP[m.kind][1]}</span><h2>${esc(m.subject)}</h2>
+  <div class="mfrom">From <b>EPS Client Service</b> &lt;clientservice@earlypaymentsystem.co.za&gt; · ${m.date}, ${m.t.slice(0,5)} · Sent by email and SMS</div></div>
+  <div class="mbody">${m.body.map(p=>`<p>${esc(p)}</p>`).join("")}</div>
+  ${m.details.length?`<div class="card" style="margin-top:6px"><dl class="kv">${m.details.map(d=>`<dt>${esc(d[0])}</dt><dd>${esc(d[1])}</dd>`).join("")}</dl></div>`:""}
+  <div class="mcta">${m.cta?(done&&m.kind==="act"?`<span class="status-chip ok">✓ You've completed this step</span><button class="btn" data-act="msgGo" data-id="${m.id}">Go to my application</button>`:`<button class="btn primary" data-act="msgGo" data-id="${m.id}">${esc(m.cta.label)} →</button>`):""}
+  <span class="small muted">Questions? Call 010 013 0453</span></div></div>`;
+}
+function shellBO(){
+  const q=BO.queue.filter(x=>!x.done);
+  const tabs=[["queue","Work queue",q.length],["dash","Dashboard"],["rules","Credit rules"],["audit","Audit trail"]];
+  return `<div class="shell"><nav class="side dark"><div class="side-lbl">Lending operations</div>${tabs.map(t=>`<button data-tab="${t[0]}" aria-current="${BO.tab===t[0]}">${t[1]}${t[2]?`<span class="cnt">${t[2]}</span>`:""}</button>`).join("")}</nav><section class="mainp">${renderBO()}</section></div>`;
+}
+function renderClient(){
+  const a=S.app, sc=S.sc, idx=STEPS.findIndex(s=>s[0]===(a.step==="declined"?"assess":a.step));
+  const appPill = a.status==="Draft"?"":`<span class="pill ${a.status.match(/Declined/)?"bad":a.status.match(/Referred|Awaiting/)?"warn":a.status.match(/Active|Approved|Accepted|Disbursed|Settled/)?"ok":"red"}"><span class="dot"></span>${a.id}: ${esc(a.status)}</span>`;
+  const accPill = `<span class="pill ${S.account==="Onboarded"?"ok":S.account==="Verifying"?"warn":""}"><span class="dot"></span>Account: ${S.account}</span>`;
+  return `<div class="ph"><div><div class="small muted">Business term loan</div><h2>${S.account==="Not registered"?"Apply for funding":esc(sc.company)}</h2></div><div class="status">${accPill}${appPill}</div></div>
+  <div class="steps">${STEPS.map((s,i)=>`<div class="st ${i<idx?"done":i===idx?"cur":""}"><b>Stage ${i+1}</b><span>${s[1]}</span></div>`).join("")}</div>
+  <div class="pad stack">${({onboard:vOnboard,request:vRequest,assess:vAssess,declined:vAssess,offer:vOffer,execute:vExecute,monitor:vMonitor})[a.step]()}</div>`;
+}
+
+function vOnboard(){
+  const a=S.app, sc=S.sc;
+  if(!a.checks.length){
+    return `${why("<strong>Stage 1 is the gateway.</strong> The loan request stays locked until onboarding and verification are complete. Every check below runs through the provider-agnostic KYC/FICA orchestration layer.")}
+    <div class="grid2">
+      <label class="f">Registered company name<input value="${esc(sc.company)}" readonly></label>
+      <label class="f">CIPC registration number<input value="${sc.reg}" readonly></label>
+      <label class="f">Authorised representative<input value="${esc(sc.applicant)}" readonly></label>
+      <label class="f">SA ID number<input value="${sc.applicantId}" readonly></label>
+      <label class="f">Email<input value="${sc.email}" readonly></label>
+      <label class="f">Mobile<input value="${sc.mobile}" readonly></label>
+    </div>
+    <div class="card stack">
+      <label class="check"><input type="checkbox" id="c1" checked> I consent to Trade Capital Finance processing my and the company's personal information for identity verification, fraud prevention and credit assessment, in line with POPIA.</label>
+      <label class="check"><input type="checkbox" id="c2" checked> I consent to credit bureau enquiries on the company and its directors.</label>
+    </div>
+    <div class="row"><button class="btn primary" data-act="startOnboard">Create account and verify</button><span class="small muted">Details are pre-filled for this demo scenario.</span></div>`;
+  }
+  const done=a.verified;
+  return `${why(done?"<strong>Verified once, reused later.</strong> Results are stored on the persistent client record with validity windows, so a repeat application from this client pays nothing to re-onboard.":"<strong>Watch the waterfall.</strong> The cheapest sufficient source runs first; premium checks only fire when a rule asks for escalation, and paid calls only happen after earlier hard stops pass.")}
+  <div class="card"><div class="row" style="justify-content:space-between"><h3 style="font-size:16px">Onboarding and verification</h3><span class="small muted">${a.checks.filter(c=>c.st!=="wait"&&c.st!=="run").length} of ${a.checks.length} complete</span></div>
+  <ul class="checks">${a.checks.map(c=>`<li><span class="ic ${c.st}">${c.st==="ok"?"✓":c.st==="bad"?"✕":c.st==="warn"?"!":c.st==="skip"?"–":""}</span>
+    <div><div class="chk-t">${esc(c.t)}</div><div class="chk-d">${esc(c.st==="ok"||c.st==="warn"?c.d:c.p)}</div></div><div>${c.st==="ok"||c.st==="warn"?`<span class="status-chip ok">✓ ${c.lbl||"Verified"}</span>`:c.st==="run"?`<span class="status-chip run">Checking…</span>`:`<span class="status-chip wait">Queued</span>`}</div></li>`).join("")}</ul></div>
+  ${done?`<div class="row"><button class="btn primary" data-act="toRequest">Continue to loan request</button><span class="small muted">Your business is verified. You won't need to repeat this for future applications.</span></div>`:""}`;
+}
+
+function vRequest(){
+  const sc=S.sc, r=sc.req;
+  return `${S.reuse?why("<strong>Returning client.</strong> Onboarding was skipped: verified results on the client record are still valid, so R0 was spent re-verifying."):why("<strong>The clock starts when the request is submitted.</strong> Target: a qualifying applicant sees an offer in under five minutes of system processing time, excluding time the client spends on their own actions.")}
+  <div class="grid2">
+    <label class="f">Amount requested (R)<input id="ramt" type="number" min="50000" step="10000" value="${r.amount}"></label>
+    <label class="f">Tenor<select id="rten">${[3,6,9,12].map(t=>`<option ${t===r.tenor?"selected":""} value="${t}">${t} months</option>`).join("")}</select></label>
+  </div>
+  <label class="f">Purpose of funding<input id="rpur" value="${esc(r.purpose)}"></label>
+  <div class="card kv" style="display:grid"><dt>Product</dt><dd>Short-term business term loan</dd><dt>Repayment</dt><dd>Monthly via DebiCheck</dd><dt>Settlement account</dt><dd>${esc(sc.bank)}</dd></div>
+  <div class="row"><button class="btn primary" data-act="submitRequest">Submit loan request</button></div>`;
+}
+
+function vAssess(){
+  const a=S.app, e=a.engine, b=a.bank;
+  let h = `<div class="row" style="justify-content:space-between"><div class="small muted">System processing time <span class="timer" id="tmr">${fmtT(tElapsed())}</span> · client time excluded</div><span class="pill red">Rule set v${a.cfgVersion||BO.cfg.version}</span></div>`;
+  // stage 1 box
+  h += `<div class="card"><h3 style="font-size:16px;margin-bottom:6px">Stage 1: hard-stop rules${BTS}</h3><ul class="checks">${(a.hard||[]).map(c=>`<li><span class="ic ${c.st}">${c.st==="ok"?"✓":c.st==="bad"?"✕":c.st==="skip"?"–":""}</span><div><div class="chk-t">${esc(c.t)}</div><div class="chk-d">${esc(c.d)}</div></div><div class="cost">${c.st==="bad"?"Fail":c.st==="ok"?"Pass":c.st==="skip"?"Skipped":""}</div></li>`).join("")}</ul></div>`;
+  if(a.step==="declined"){
+    h += `<div class="card" style="background:var(--bad-bg)"><h3 style="font-size:18px;color:var(--bad)">We can't offer funding right now</h3>
+    <p class="small" style="margin:8px 0 0">Your credit report shows that the business or a director is currently under debt review. Under our credit policy we can't extend new credit while debt review is active.</p>
+    <p class="small" style="margin:6px 0 0">If you believe this record is wrong, you can dispute it free of charge with the credit bureau. You're welcome to apply again once the debt review has ended. <span class="muted">Reason code HS-DBR-01.</span></p></div>
+    ${why("<strong>Hard-stop gating in action.</strong> Because the engine ran its hard stops before any further paid call, this decline cost TCF nothing beyond onboarding.")}
+    <div class="row"><button class="btn primary" data-act="restartSame">Run the next demo scenario</button></div>`;
+    return h;
+  }
+  if(a.hardPassed && !a.consent){
+    h += `<div class="card stack"><h3 style="font-size:16px">Connect your business bank account</h3>
+    <p class="small muted" style="margin:0">We'll read up to 12 months of transactions from <b>${esc(S.sc.bank)}</b> through an accredited Open Banking provider. Read-only access, used only for this credit assessment.</p>
+    <label class="check"><input type="checkbox" id="obc" checked> I consent to a once-off, read-only retrieval of 12 months of business bank data.</label>
+    <div><button class="btn primary" data-act="consentBank">Give consent and connect</button></div></div>`;
+  }
+  if(b){
+    h += `<div class="card"><div class="row" style="justify-content:space-between"><h3 style="font-size:16px">Financial data capture</h3><span class="small muted">${b.reduce((x,y)=>x+y.txns,0).toLocaleString("en-ZA")} transactions classified</span></div>
+    <div class="chart" style="margin-top:10px">${chart(b)}</div>
+    <div class="legend"><span><i class="sw" style="background:var(--red)"></i>Operating revenue (counted)</span><span><i class="sw" style="background:var(--orange)"></i>Owner injections (excluded)</span><span><i class="sw" style="background:#8A8A94"></i>Own-account transfers (excluded)</span><span><i class="sw" style="background:#9DB9D6"></i>Loan proceeds (excluded)</span></div>
+    ${e?`<div class="grid4" style="margin-top:14px"><div><div class="lbl">Verified revenue / month</div><div style="font-weight:700;font-size:18px">${R(e.avgRev)}</div></div><div><div class="lbl">Revenue volatility</div><div style="font-weight:700;font-size:18px">${pct(e.cv*100,0)}</div></div><div><div class="lbl">Free cash flow / month</div><div style="font-weight:700;font-size:18px">${R(e.fcf)}</div></div><div><div class="lbl">Returned debit orders</div><div style="font-weight:700;font-size:18px">${S.sc.fin.returns}</div></div></div>`:""}</div>`;
+  }
+  if(a.stagesShown){
+    const st=[["Affordability","TCF methodology; repayment capacity on the request "+(e.rcrReq).toFixed(2)+"x","afford",BO.cfg.wAfford],["Behavioural risk","Volatility, returned debits, overdrawn days","behav",BO.cfg.wBehav],["Environmental / business risk",S.sc.sector+" ("+S.sc.sectorRisk.toLowerCase()+" risk), "+S.sc.years+" years trading","env",BO.cfg.wEnv],["Bureau","Commercial and director bureau score","bureau",BO.cfg.wBureau]];
+    h += `<div class="card"><h3 style="font-size:16px">Stages 2 to 5: scoring${BTS}</h3>${st.map((x,i)=>{const on=i<a.stagesShown;return `<div class="stage ${on?"done":""}"><div class="sn">${i+2<=4?i+2:"B"}</div><div><div class="chk-t">${x[0]} <span class="xs muted">weight ${x[3]}%</span></div><div class="chk-d">${esc(x[1])}</div><div class="bar-o" style="margin-top:6px"><div class="bar-i" style="width:${on?e.s[x[2]]:0}%"></div></div></div><div class="score">${on?Math.round(e.s[x[2]])+" / 100":"…"}</div></div>`}).join("")}
+    <div class="stage ${a.stagesShown>4?"done":""}"><div class="sn">5</div><div><div class="chk-t">Weighted Average Credit Risk Metric</div><div class="chk-d">Combines the approved components into a single risk grade</div></div><div class="score" style="font-size:18px">${a.stagesShown>4?Math.round(e.wacrm)+" · "+e.grade:"…"}</div></div></div>`;
+  }
+  if(a.decisionShown){
+    const maxv=Math.max(...e.limits.map(l=>l.v));
+    const dcol=e.decision==="approve"?"ok":e.decision==="refer"?"warn":"bad";
+    h += `<div class="card"><h3 style="font-size:16px">Risk adjustments and the lower-of limit${BTS}</h3>
+    ${e.adj.length?e.adj.map(x=>`<div class="reason"><span class="code">${x.code}</span><span>${esc(x.t)}</span></div>`).join(""):`<div class="small muted" style="margin:6px 0">No exposure-increasing risk factors triggered.</div>`}
+    <div class="lowerof" style="margin-top:12px">${e.limits.map(l=>`<div class="lo ${l===e.lowest?"min":""}"><span>${esc(l.k)}</span><div class="bar-o"><div class="bar-i" style="width:${Math.max(2,l.v/maxv*100)}%"></div></div><span style="text-align:right">${R(l.v)}</span></div>`).join("")}</div>
+    ${e.limitCut?`<div class="small" style="margin-top:8px">Risk adjustment: lowest limit ${R(e.lowest.v)} less 20% = <b>${R(e.approved)}</b></div>`:""}</div>
+    <div class="card"><div class="row" style="justify-content:space-between"><h3 style="font-size:16px">Credit decision</h3><span class="pill ${dcol}"><span class="dot"></span>${e.decision==="approve"?"Approved, straight-through":e.decision==="refer"?"Referred for credit review":"Declined"}</span></div>
+    <div class="grid3" style="margin-top:12px"><div><div class="lbl">Approved amount</div><div class="fig red">${R(e.approved)}</div></div><div><div class="lbl">Tenor</div><div class="fig">${e.tenor} mo</div></div><div><div class="lbl">Rate (risk-based)</div><div class="fig">${pct(e.rate)}</div></div></div>
+    <hr><div class="small muted" style="margin-bottom:4px">Reason codes shown to the credit team and summarised for the client</div>${e.reasons.map(x=>`<div class="reason"><span class="code">${x.code}</span><span>${esc(x.t)}</span></div>`).join("")}</div>`;
+    if(e.decision==="approve") h+=`<div class="row"><button class="btn primary" data-act="toOffer">Present offer</button></div>`;
+    else if(e.decision==="refer") h+= a.referApproved? `<div class="row"><button class="btn primary" data-act="toOffer">Present offer</button><span class="small muted">Credit review approved in the back-office.</span></div>` : why(`<strong>Exception-based routing.</strong> This application is waiting in the back-office credit review queue. Switch to the <b>back-office</b> in the demo bar to review it as the credit analyst, then approve it as the credit manager (maker-checker).`);
+  }
+  return h;
+}
+function chart(b){
+  const W=720,H=220,pl=46,pb=24,pt=8,bw=(W-pl-10)/12*.62, gap=(W-pl-10)/12;
+  const tot=b.map(x=>x.op+x.inj+x.transfers+x.loan), max=Math.max(...tot)*1.08;
+  const y=v=>pt+(H-pb-pt)*(1-v/max);
+  let g="";
+  for(let k=0;k<=4;k++){const v=max*k/4;g+=`<line x1="${pl}" x2="${W-6}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${pl-6}" y="${y(v)+4}" font-size="10" text-anchor="end" fill="var(--muted)">${Math.round(v/1000)}k</text>`;}
+  b.forEach((x,i)=>{const X=pl+i*gap+(gap-bw)/2;let base=0;
+    [["op","var(--red)"],["inj","var(--orange)"],["transfers","#8A8A94"],["loan","#9DB9D6"]].forEach(([k,c])=>{const v=x[k]; if(!v) return; g+=`<rect x="${X}" y="${y(base+v)}" width="${bw}" height="${y(base)-y(base+v)}" fill="${c}" rx="2"><title>${x.m}: ${R(v)}</title></rect>`; base+=v;});
+    g+=`<text x="${X+bw/2}" y="${H-6}" font-size="10" text-anchor="middle" fill="var(--muted)">${x.m.split(" ")[0]}</text>`;});
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Monthly inflows by classification">${g}</svg>`;
+}
+
+function vOffer(){
+  const o=S.app.offer, sc=S.sc;
+  return `<div class="row" style="justify-content:space-between"><div class="small muted">System processing time, request to offer: <span class="timer" id="tmr">${fmtT(tElapsed())}</span></div><span class="pill ok"><span class="dot"></span>Under the 5-minute target</span></div>
+  <div class="card"><div class="small muted">Your offer from Trade Capital Finance</div>
+  <div class="grid3" style="margin-top:8px"><div><div class="lbl">Loan amount</div><div class="fig red">${R(o.P)}</div></div><div><div class="lbl">Monthly instalment</div><div class="fig">${R2(o.inst)}</div></div><div><div class="lbl">Term</div><div class="fig">${o.n} months</div></div></div>
+  <hr><dl class="kv"><dt>Interest rate (fixed, per year)</dt><dd>${pct(o.rate)}</dd><dt>Initiation fee (once-off)</dt><dd>${R2(o.fee)}</dd><dt>Monthly service fee (included in instalment)</dt><dd>${R2(o.svc)}</dd><dt>Total cost of credit</dt><dd>${R2(o.costOfCredit)}</dd><dt>Total amount repayable</dt><dd>${R2(o.totalRepay)}</dd><dt>Early settlement penalty</dt><dd>None</dd><dt>Offer valid for</dt><dd>${o.expires}</dd></dl></div>
+  <details class="card"><summary style="cursor:pointer;font-weight:600">Repayment schedule (${o.n} instalments)</summary><div class="tbl-w" style="margin-top:10px"><table><thead><tr><th>#</th><th>Date</th><th class="n">Instalment</th><th class="n">Interest</th><th class="n">Capital</th><th class="n">Balance</th></tr></thead><tbody>${o.sched.map(r=>`<tr><td>${r.k}</td><td>${r.date}</td><td class="n">${R2(r.inst)}</td><td class="n">${R2(r.int)}</td><td class="n">${R2(r.prin)}</td><td class="n">${R2(r.bal)}</td></tr>`).join("")}</tbody></table></div></details>
+  ${why("<strong>Treating Customers Fairly as a system property.</strong> Every cost is visible before acceptance, the offer is matched to verified affordability, and there is no early-settlement penalty. Pricing sits within the configured regulatory cap.")}
+  <div class="row"><button class="btn primary" data-act="acceptOffer">Accept offer</button>${S.app.offerSaved?`<span class="small muted">Saved. Your offer stays open for 7 days.</span>`:`<button class="btn" data-act="declineOffer">Save and decide later</button>`}</div>`;
+}
+
+function vExecute(){
+  const a=S.app, sc=S.sc, o=a.offer;
+  const cps=[["Loan agreement signed electronically",a.signed],["DebiCheck mandate authenticated",a.mandate==="ok"],["Settlement account verified (AVS)",a.avs],...(S.key==="refer"?[["Director suretyship uploaded",a.surety]]:[]),["Final maker-checker approval",a.status==="Disbursed"||a.status==="Active"],["Booked on Loan Booking Platform",!!a.loan]];
+  return `${why("<strong>No disbursement until every condition precedent is met.</strong> The checklist below is enforced by the workflow layer, not by people remembering.")}
+  <div class="card"><h3 style="font-size:16px;margin-bottom:6px">Conditions precedent</h3><ul class="checks">${cps.map(c=>`<li><span class="ic ${c[1]?"ok":"wait"}">${c[1]?"✓":""}</span><div class="chk-t">${c[0]}</div><div></div></li>`).join("")}</ul></div>
+  ${!a.signed?`<div class="card stack"><h3 style="font-size:16px">Loan agreement</h3>
+    <div class="small" style="background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px;max-height:160px;overflow:auto">
+    <b>Business Term Loan Agreement</b> between Trade Capital Finance (Pty) Ltd and ${esc(sc.company)} (${sc.reg}).<br>Principal ${R2(o.P)}; term ${o.n} months; fixed rate ${pct(o.rate)} per year; monthly instalment ${R2(o.inst)} by DebiCheck from ${esc(sc.bank)}; initiation fee ${R2(o.fee)}; total repayable ${R2(o.totalRepay)}. The borrower may settle early at any time without penalty. ${S.key==="refer"?"<br>Condition: suretyship by each director.":""}<br>Generated from template LA-BTL v3.2.</div>
+    <div class="row"><label class="f" style="flex:1;min-width:180px">One-time PIN sent to ${sc.mobile}<input id="otp" value="482 915"></label><button class="btn primary" data-act="sign" style="align-self:flex-end">Sign agreement</button></div></div>`:""}
+  ${a.signed&&a.mandate!=="ok"?`<div class="card stack"><h3 style="font-size:16px">Authorise your DebiCheck mandate</h3>
+    <p class="small muted" style="margin:0">Your bank will ask you to approve a mandate of ${R2(o.inst)} per month for ${o.n} months, collected on the 1st.</p>
+    <div><button class="btn primary" data-act="mandate" ${a.mandate==="pending"?"disabled":""}>${a.mandate==="pending"?"Waiting for approval in your banking app…":"Send mandate to my bank"}</button></div></div>`:""}
+  ${a.signed&&a.mandate==="ok"&&S.key==="refer"&&!a.surety?`<div class="card stack"><h3 style="font-size:16px">Upload director suretyship</h3><div class="row"><span class="small">Suretyship_R_Mokoena_signed.pdf</span><button class="btn primary small" data-act="surety">Upload</button></div></div>`:""}
+  ${a.status==="Awaiting final approval"?why("<strong>Maker-checker on disbursement.</strong> Switch to the <b>back-office</b> in the demo bar. The credit analyst prepares the disbursement and a different user, the credit manager, approves it. The platform then books the loan and sends the payment instruction."):""}`;
+}
+
+function vMonitor(){
+  const a=S.app, l=a.loan, o=a.offer;
+  const paid=o.sched.filter(r=>r.status==="Paid").length, arrears=o.sched.filter(r=>r.status==="Missed").reduce((x,r)=>x+r.inst,0);
+  const outstanding=o.sched.filter(r=>r.status!=="Paid").reduce((x,r)=>x+r.prin,0);
+  const ew=[...(a.engine.cv>.2?["Revenue volatility above threshold"]:[]),...(arrears>0?["Instalment in arrears"]:[])];
+  return `<div class="grid4">
+    <div class="card"><div class="lbl">Loan account</div><div style="font-weight:700;font-size:17px">${l.loanId}</div></div>
+    <div class="card"><div class="lbl">Capital outstanding</div><div style="font-weight:700;font-size:17px">${R2(outstanding)}</div></div>
+    <div class="card"><div class="lbl">Instalments paid</div><div style="font-weight:700;font-size:17px">${paid} of ${o.n}</div></div>
+    <div class="card" style="${arrears?"background:var(--bad-bg)":""}"><div class="lbl">Arrears</div><div style="font-weight:700;font-size:17px">${R2(arrears)}</div></div></div>
+  ${why("<strong>The Loan Management Platform is the system of record</strong> for the booked loan. Collections, arrears and early-warning statuses flow back to EPS so the client and TCF see one picture.")}
+  <div class="card"><div class="row" style="justify-content:space-between"><h3 style="font-size:16px">Repayments</h3><div class="row"><button class="btn small" data-act="collect">Run DebiCheck collection</button><button class="btn small" data-act="miss">Simulate a failed collection</button></div></div>
+  <div class="tbl-w" style="margin-top:10px"><table><thead><tr><th>#</th><th>Due</th><th class="n">Instalment</th><th>Status</th></tr></thead><tbody>${o.sched.map(r=>`<tr><td>${r.k}</td><td>${r.date}</td><td class="n">${R2(r.inst)}</td><td><span class="pill ${r.status==="Paid"?"ok":r.status==="Missed"?"bad":""}">${r.status}</span></td></tr>`).join("")}</tbody></table></div></div>
+  <div class="card"><h3 style="font-size:16px;margin-bottom:6px">Early-warning indicators</h3>${ew.length?ew.map(x=>`<div class="reason"><span class="pill warn">Watch</span><span>${x}</span></div>`).join(""):`<div class="small muted">None active.</div>`}</div>
+  <div class="row"><button class="btn" data-act="newApp">Start a new application for this client</button><span class="small muted">Shows verification reuse: no re-onboarding cost.</span></div>`;
+}
+
+/* ---------------- back-office render ---------------- */
+function renderBO(){
+  const q=BO.queue.filter(x=>!x.done);
+  const tabs=[["queue",`Work queue${q.length?" ("+q.length+")":""}`],["dash","Dashboard"],["rules","Credit rules"],["audit","Audit trail"]];
+  return `<div class="ph"><div><div class="small muted">Staff console</div><h2>${tabs.find(t=>t[0]===BO.tab)[1].replace(/ \(\d+\)/,"")}</h2></div><span class="small muted">Signed in as ${BO.user==="maker"?"Lerato N., credit analyst":"Sipho M., credit manager"}</span></div>
+  <div class="pad stack">${({queue:boQueue,dash:boDash,rules:boRules,audit:boAudit})[BO.tab]()}</div>`;
+}
+function boQueue(){
+  const items=BO.queue.filter(x=>!x.done);
+  if(!items.length) return `<div class="empty">No items need action. Referred applications and disbursements awaiting approval appear here.</div>`;
+  return items.map(it=>{
+    const who = it.stage==="prepare"?"maker":"checker";
+    const canAct = BO.user===who;
+    const act = it.type==="change" ? "Approve account change" : it.type==="credit" ? (it.stage==="prepare"?"Recommend approval":"Approve credit") : (it.stage==="prepare"?"Prepare disbursement":"Approve and disburse");
+    if(it.type==="change") return `<div class="qi"><div><div class="row"><b>${it.app}</b><span class="pill bad">Bank detail change</span><span class="pill">Manager approval</span></div><div class="small" style="margin-top:6px">${esc(it.company)} · ${esc(it.detail)}</div><div class="xs muted" style="margin-top:4px">Checks: ${esc(it.maker)}.</div></div>${BO.user==="checker"?`<button class="btn primary small" data-act="qAct" data-id="${it.id}">${act}</button>`:`<button class="btn small" data-user="checker">Sign in as credit manager</button>`}</div>`;
+    const e=S.app.engine;
+    return `<div class="qi"><div><div class="row"><b>${it.app}</b><span class="pill ${it.type==="credit"?"warn":"red"}">${it.type==="credit"?"Credit review":"Final disbursement approval"}</span><span class="pill">${it.stage==="prepare"?"Step 1 of 2: analyst":"Step 2 of 2: manager"}</span></div>
+    <div class="small" style="margin-top:6px">${esc(it.company)} · ${R(it.amount)} over ${it.tenor} months · grade ${e?e.grade:"–"}</div>
+    ${it.type==="credit"?`<div class="xs muted" style="margin-top:4px">${e.adj.map(x=>x.code).join(", ")}: referred by rule. ${it.maker?"Recommended by "+it.maker+".":""}</div>`:`<div class="xs muted" style="margin-top:4px">All conditions precedent met. ${it.maker?"Prepared by "+it.maker+".":""}</div>`}
+    ${!canAct?`<div class="xs" style="margin-top:6px;color:var(--warn)">${who==="checker"&&it.maker&&BO.user==="maker"?"Segregation of duties: the analyst who prepared this item cannot approve it. Switch to the credit manager.":"This step belongs to the "+(who==="maker"?"credit analyst":"credit manager")+"."}</div>`:""}</div>
+    ${canAct?`<button class="btn primary small" data-act="qAct" data-id="${it.id}">${act}</button>`:`<button class="btn small" data-user="${who}">Sign in as ${who==="maker"?"credit analyst":"credit manager"}</button>`}</div>`;
+  }).join("");
+}
+/* ---------- dashboard ---------- */
+const C={blue:"#2C6394",navy:"#14365A",gold:"#C9A45F",lb:"#9DB9D6",red:"#C4103A",green:"#11845B",grey:"#A7B3C2"};
+const Rm=v=>v>=1e6?"R "+(v/1e6).toFixed(1)+"m":v>=1e3?"R "+Math.round(v/1e3)+"k":"R "+Math.round(v);
+function dashData(period){
+  const r=rng(period==="12m"?71:period==="90d"?37:13);
+  const n=period==="12m"?12:period==="90d"?13:30;
+  const labels=period==="12m"?MONTHS.map(m=>m.split(" ")[0]):period==="90d"?Array.from({length:13},(_,i)=>"W"+(i+1)):Array.from({length:30},(_,i)=>String(i+1));
+  const scale=period==="12m"?1:period==="90d"?0.235:0.034;
+  let out=[], outstanding=period==="12m"?0:48e6, arr=[];
+  for(let i=0;i<n;i++){
+    const ramp=period==="12m"?(0.35+0.65*i/11):(0.92+0.08*i/(n-1));
+    const apps=Math.round((560*ramp)*scale*(0.9+r()*0.2));
+    const approved=Math.round(apps*(0.57+r()*0.07)), stp=Math.round(approved*(0.7+r()*0.08)), declined=Math.round(apps*(0.21+r()*0.04));
+    const referred=Math.max(0,apps-approved-declined);
+    const disbursedN=Math.round(approved*0.83), disbursed=disbursedN*(385000+r()*70000);
+    outstanding=outstanding*(period==="12m"?0.9:0.975)+disbursed;
+    const spend=apps*(118+r()*18), avoided=apps*(34+r()*12);
+    out.push({label:labels[i],apps,approved,stp,declined,referred,disbursed,disbursedN,outstanding,spend,avoided,tto:150+r()*70});
+  }
+  // blend live session into the latest bucket
+  const L=out[n-1], k=BO.kpi; L.apps+=k.apps; L.approved+=k.stp+(k.referred?0:0); L.stp+=k.stp; L.declined+=k.declined; L.referred+=k.referred; L.disbursed+=k.disbursed; L.outstanding+=k.disbursed; L.spend+=k.spend; L.avoided+=k.saved;
+  return out;
+}
+function svgLineChart(labels, series, o={}){
+  const W=640,H=o.h||220,pl=42,pr=10,pt=12,pb=26, max=Math.max(...series.flatMap(s=>s.vals))*1.12||1;
+  const x=i=>pl+(W-pl-pr)*(labels.length===1?0.5:i/(labels.length-1)), y=v=>pt+(H-pt-pb)*(1-v/max);
+  let g="";
+  for(let k=0;k<=4;k++){const v=max*k/4; g+=`<line class="gl" x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}"/><text x="${pl-6}" y="${y(v)+4}" text-anchor="end">${o.fmt?o.fmt(v):Math.round(v)}</text>`;}
+  const step=Math.ceil(labels.length/12);
+  labels.forEach((l,i)=>{ if(i%step===0||i===labels.length-1) g+=`<text x="${x(i)}" y="${H-6}" text-anchor="middle">${l}</text>`; });
+  series.forEach(s=>{
+    const pts=s.vals.map((v,i)=>`${x(i)},${y(v)}`).join(" ");
+    if(s.area) g+=`<polygon points="${x(0)},${y(0)} ${pts} ${x(s.vals.length-1)},${y(0)}" fill="${s.color}" opacity=".14"/>`;
+    g+=`<polyline points="${pts}" fill="none" stroke="${s.color}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+    s.vals.forEach((v,i)=>{ g+=`<circle cx="${x(i)}" cy="${y(v)}" r="${labels.length>14?2:3.2}" fill="${s.color}"><title>${labels[i]}: ${s.name} ${o.fmt?o.fmt(v):v}</title></circle>`; });
+  });
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${o.aria||"Line chart"}">${g}</svg>`;
+}
+function svgBarLine(labels, bars, line, o={}){
+  const W=640,H=o.h||220,pl=46,pr=46,pt=12,pb=26, bmax=Math.max(...bars.vals)*1.15||1, lmax=Math.max(...line.vals)*1.1||1;
+  const bw=(W-pl-pr)/labels.length, y=v=>pt+(H-pt-pb)*(1-v/bmax), y2=v=>pt+(H-pt-pb)*(1-v/lmax);
+  let g="";
+  for(let k=0;k<=4;k++){ g+=`<line class="gl" x1="${pl}" x2="${W-pr}" y1="${y(bmax*k/4)}" y2="${y(bmax*k/4)}"/><text x="${pl-6}" y="${y(bmax*k/4)+4}" text-anchor="end">${Rm(bmax*k/4)}</text><text x="${W-pr+6}" y="${y2(lmax*k/4)+4}">${Rm(lmax*k/4)}</text>`; }
+  const step=Math.ceil(labels.length/12);
+  bars.vals.forEach((v,i)=>{ const X=pl+i*bw+bw*0.18; g+=`<rect x="${X}" y="${y(v)}" width="${bw*0.64}" height="${Math.max(0,y(0)-y(v))}" rx="3" fill="${bars.color}"><title>${labels[i]}: ${bars.name} ${Rm(v)}</title></rect>`; if(i%step===0||i===labels.length-1) g+=`<text x="${X+bw*0.32}" y="${H-6}" text-anchor="middle">${labels[i]}</text>`; });
+  const pts=line.vals.map((v,i)=>`${pl+i*bw+bw/2},${y2(v)}`).join(" ");
+  g+=`<polyline points="${pts}" fill="none" stroke="${line.color}" stroke-width="2.5" stroke-linejoin="round"/>`;
+  line.vals.forEach((v,i)=>{ g+=`<circle cx="${pl+i*bw+bw/2}" cy="${y2(v)}" r="3" fill="${line.color}"><title>${labels[i]}: ${line.name} ${Rm(v)}</title></circle>`; });
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${o.aria||"Bar chart"}">${g}</svg>`;
+}
+function svgStack(labels, a, b, o={}){
+  const W=640,H=o.h||200,pl=46,pr=10,pt=12,pb=26, max=Math.max(...a.vals.map((v,i)=>v+b.vals[i]))*1.12||1;
+  const bw=(W-pl-pr)/labels.length, y=v=>pt+(H-pt-pb)*(1-v/max); let g="";
+  for(let k=0;k<=4;k++){ g+=`<line class="gl" x1="${pl}" x2="${W-pr}" y1="${y(max*k/4)}" y2="${y(max*k/4)}"/><text x="${pl-6}" y="${y(max*k/4)+4}" text-anchor="end">${Rm(max*k/4)}</text>`; }
+  const step=Math.ceil(labels.length/12);
+  labels.forEach((l,i)=>{ const X=pl+i*bw+bw*0.2, w=bw*0.6;
+    g+=`<rect x="${X}" y="${y(a.vals[i])}" width="${w}" height="${y(0)-y(a.vals[i])}" fill="${a.color}"><title>${l}: ${a.name} ${Rm(a.vals[i])}</title></rect>`;
+    g+=`<rect x="${X}" y="${y(a.vals[i]+b.vals[i])}" width="${w}" height="${y(a.vals[i])-y(a.vals[i]+b.vals[i])}" fill="${b.color}"><title>${l}: ${b.name} ${Rm(b.vals[i])}</title></rect>`;
+    if(i%step===0||i===labels.length-1) g+=`<text x="${X+w/2}" y="${H-6}" text-anchor="middle">${l}</text>`; });
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${o.aria||"Stacked bars"}">${g}</svg>`;
+}
+function svgDonut(parts, center, sub){
+  const tot=parts.reduce((s2,p)=>s2+p.val,0)||1, R0=78, r0=50, cx=100, cy=100; let a0=-Math.PI/2, g="";
+  parts.forEach(p=>{ const a1=a0+2*Math.PI*p.val/tot, large=a1-a0>Math.PI?1:0;
+    const P=(r,a)=>`${cx+r*Math.cos(a)},${cy+r*Math.sin(a)}`;
+    if(p.val>0) g+=`<path d="M${P(R0,a0)} A${R0},${R0} 0 ${large} 1 ${P(R0,a1-0.0001)} L${P(r0,a1-0.0001)} A${r0},${r0} 0 ${large} 0 ${P(r0,a0)} Z" fill="${p.color}"><title>${p.label}: ${p.val} (${Math.round(p.val/tot*100)}%)</title></path>`; a0=a1; });
+  g+=`<text x="100" y="98" text-anchor="middle" style="font-size:22px;font-weight:800;fill:var(--ink)">${center}</text><text x="100" y="116" text-anchor="middle">${sub}</text>`;
+  return `<svg viewBox="0 0 200 200" style="max-width:220px;margin:0 auto" role="img" aria-label="Decision mix">${g}</svg>`;
+}
+function hbars(items, fmt, o={}){
+  const max=Math.max(...items.map(i=>i.val))||1;
+  return `<div style="display:grid;gap:9px">${items.map(it=>`<div style="display:grid;grid-template-columns:${o.lw||"150px"} minmax(0,1fr) ${o.vw||"70px"};gap:10px;align-items:center;font-size:13px"><span>${esc(it.label)}</span><div class="bar-o" style="height:12px"><div style="height:100%;border-radius:6px;width:${Math.max(2,it.val/max*100)}%;background:${it.color||C.blue}"></div></div><span style="text-align:right;font-weight:700">${fmt(it.val)}</span></div>`).join("")}</div>`;
+}
+function boDash(){
+  const k=BO.kpi, p=BO.period||"12m", d=dashData(p), lab=d.map(x=>x.label);
+  const sum=f=>d.reduce((s2,x)=>s2+f(x),0);
+  const apps=sum(x=>x.apps), appr=sum(x=>x.approved), stp=sum(x=>x.stp), decl=sum(x=>x.declined), ref=sum(x=>x.referred), disb=sum(x=>x.disbursed), outs=d[d.length-1].outstanding;
+  const spend=sum(x=>x.spend), avoided=sum(x=>x.avoided);
+  const half=Math.floor(d.length/2), prev=d.slice(0,half).reduce((s2,x)=>s2+x.apps,0), cur=d.slice(half).reduce((s2,x)=>s2+x.apps,0), growth=prev?Math.round((cur/prev-1)*100):0;
+  const tto=S.app&&S.app.sysMs?S.app.sysMs/1000:d.reduce((s2,x)=>s2+x.tto,0)/d.length;
+  const arrearsPct=3.4, pLabel={"30d":"Last 30 days","90d":"Last 90 days","12m":"Last 12 months"}[p];
+  const kpis=[["Applications",apps.toLocaleString("en-ZA"),`<span class="delta up">▲ ${growth}%</span>`],["Approval rate",Math.round(appr/apps*100)+"%",""],["Straight-through",Math.round(stp/appr*100)+"%",`<span class="delta up">of approvals</span>`],["Avg time to offer",Math.floor(tto/60)+"m "+String(Math.round(tto%60)).padStart(2,"0")+"s",`<span class="delta up">target &lt; 5m</span>`],
+    ["Disbursed",Rm(disb),""],["Book outstanding",Rm(outs),""],["Arrears 30+ days",arrearsPct+"%",`<span class="delta dn">▲ 0.3pt</span>`],["Verification cost / app","R "+Math.round(spend/apps),`<span class="delta up">${Math.round(avoided/(spend+avoided)*100)}% avoided</span>`]];
+  const funnel=[["Registered",Math.round(apps*1.38)],["Verified",Math.round(apps*1.2)],["Loan requested",apps],["Offer made",appr],["Offer accepted",Math.round(appr*0.87)],["Disbursed",sum(x=>x.disbursedN)]];
+  const watch=[["Mokoena Build & Civils","LB-2026-318204","R 212 400","Revenue volatility above 20%","Watch"],["Khanyisa Catering","LB-2026-301977","R 148 900","1 instalment missed","31 days"],["Blue Crane Printing","LB-2026-297530","R 402 150","Returned debit orders ×2","Watch"],["Siyakhula Agri Supplies","LB-2026-288412","R 96 300","2 instalments missed","62 days"],["Umoya Transport","LB-2026-276045","R 538 000","Sector risk up-rated","Watch"]];
+  if(S.app&&S.app.loan&&S.app.offer.sched.some(x=>x.status==="Missed")) watch.unshift([S.sc.company,S.app.loan.loanId,R(S.app.offer.sched.filter(x=>x.status!=="Paid").reduce((s2,x)=>s2+x.prin,0)),"Instalment missed (live)","New"]);
+  return `<div class="row" style="justify-content:space-between">
+    <div class="seg" role="group" aria-label="Period">${[["30d","30 days"],["90d","90 days"],["12m","12 months"]].map(x=>`<button data-act="period" data-id="${x[0]}" aria-pressed="${p===x[0]}">${x[1]}</button>`).join("")}</div>
+    <span class="small muted">${pLabel} · simulated portfolio, plus this session's live activity</span></div>
+  <div class="card live"><div class="row" style="justify-content:space-between"><b>Live this session</b><span class="small muted">Updates as you run the demo</span></div>
+    <div class="grid4" style="margin-top:10px">${[["Applications",k.apps],["Straight-through",k.stp],["Referred",k.referred],["Declined",k.declined]].map(x=>`<div><div class="lbl">${x[0]}</div><div style="font-weight:800;font-size:22px">${x[1]}</div></div>`).join("")}</div>
+    <div class="small" style="margin-top:8px">Disbursed <b>${R(k.disbursed)}</b> · verification spend <b>${R2(k.spend)}</b> · avoided by gating and reuse <b>${R2(k.saved)}</b></div></div>
+  <div class="dgrid">${kpis.map(x=>`<div class="card kpi span3"><div class="lbl"><span>${x[0]}</span>${x[2]}</div><div class="fig">${x[1]}</div></div>`).join("")}
+    <div class="card span8"><div class="ctitle"><h3>Applications and approvals</h3><span>${pLabel}</span></div><div class="ch">${svgLineChart(lab,[{name:"Applications",vals:d.map(x=>x.apps),color:C.blue,area:true},{name:"Approvals",vals:d.map(x=>x.approved),color:C.gold},{name:"Declines",vals:d.map(x=>x.declined),color:C.grey}],{aria:"Applications and approvals over time"})}</div>
+      <div class="leg"><span><i style="background:${C.blue}"></i>Applications</span><span><i style="background:${C.gold}"></i>Approvals</span><span><i style="background:${C.grey}"></i>Declines</span></div></div>
+    <div class="card span4"><div class="ctitle"><h3>Decision mix</h3><span>${pLabel}</span></div><div class="ch">${svgDonut([{label:"Approved straight-through",val:stp,color:C.blue},{label:"Approved after review",val:appr-stp,color:C.lb},{label:"In credit review",val:ref,color:C.gold},{label:"Declined",val:decl,color:C.grey}],Math.round(appr/apps*100)+"%","approved")}</div>
+      <div class="leg"><span><i style="background:${C.blue}"></i>Straight-through</span><span><i style="background:${C.lb}"></i>After review</span><span><i style="background:${C.gold}"></i>In review</span><span><i style="background:${C.grey}"></i>Declined</span></div></div>
+    <div class="card span7"><div class="ctitle"><h3>Disbursements and book outstanding</h3><span>Bars: disbursed · line: outstanding</span></div><div class="ch">${svgBarLine(lab,{name:"Disbursed",vals:d.map(x=>x.disbursed),color:C.blue},{name:"Outstanding",vals:d.map(x=>x.outstanding),color:C.gold},{aria:"Disbursements and outstanding book"})}</div></div>
+    <div class="card span5"><div class="ctitle"><h3>Conversion funnel</h3><span>${pLabel}</span></div>${hbars(funnel.map((f,i)=>({label:f[0],val:f[1],color:i<2?C.lb:i<4?C.blue:C.navy})),v=>v.toLocaleString("en-ZA"),{lw:"110px",vw:"60px"})}
+      <div class="small muted" style="margin-top:10px">Request → disbursed conversion: <b>${Math.round(funnel[5][1]/funnel[2][1]*100)}%</b></div></div>
+    <div class="card span4"><div class="ctitle"><h3>Book by risk grade</h3><span>% of outstanding</span></div>${hbars([{label:"Grade A · 14.75%",val:46,color:C.blue},{label:"Grade B · 17.75%",val:38,color:C.lb},{label:"Grade C · 20.75%+",val:16,color:C.gold}],v=>v+"%",{lw:"128px",vw:"42px"})}</div>
+    <div class="card span4"><div class="ctitle"><h3>Arrears ageing</h3><span>% of book</span></div>${hbars([{label:"Current",val:94.1,color:C.green},{label:"1–30 days",val:2.5,color:C.gold},{label:"31–60 days",val:1.8,color:"#D98B3A"},{label:"61–90 days",val:0.9,color:C.red},{label:"90+ days",val:0.7,color:"#7A0A24"}],v=>v+"%",{lw:"84px",vw:"48px"})}</div>
+    <div class="card span4"><div class="ctitle"><h3>Top decline reasons</h3><span>Reason codes</span></div>${hbars([{label:"Affordability < 1.25x",val:38},{label:"Active debt review",val:21},{label:"Material judgments",val:14},{label:"Grade below minimum",val:12},{label:"Tampering or fraud",val:6},{label:"Other",val:9}],v=>v+"%",{lw:"140px",vw:"40px"})}</div>
+    <div class="card span6"><div class="ctitle"><h3>Verification cost control</h3><span>Spent vs avoided</span></div><div class="ch">${svgStack(lab,{name:"Spent",vals:d.map(x=>x.spend),color:C.blue},{name:"Avoided",vals:d.map(x=>x.avoided),color:C.gold},{aria:"Verification spend and avoided cost"})}</div>
+      <div class="leg"><span><i style="background:${C.blue}"></i>Spent on checks</span><span><i style="background:${C.gold}"></i>Avoided by hard-stop gating and reuse</span></div></div>
+    <div class="card span6"><div class="ctitle"><h3>Time to offer</h3><span>Seconds, request to offer</span></div><div class="ch">${svgLineChart(lab,[{name:"Average",vals:d.map(x=>Math.round(x.tto)),color:C.navy,area:true},{name:"Target",vals:d.map(()=>300),color:C.red}],{fmt:v=>Math.round(v)+"s",aria:"Time to offer"})}</div>
+      <div class="leg"><span><i style="background:${C.navy}"></i>Average</span><span><i style="background:${C.red}"></i>5-minute target</span></div></div>
+    <div class="card span12"><div class="ctitle"><h3>Early-warning watchlist</h3><span>Configurable indicators · from the Loan Management Platform</span></div>
+      <div class="tbl-w"><table><thead><tr><th>Client</th><th>Loan</th><th class="n">Capital outstanding</th><th>Indicator</th><th>Status</th></tr></thead><tbody>${watch.map(w=>`<tr><td><b>${esc(w[0])}</b></td><td>${w[1]}</td><td class="n">${w[2]}</td><td>${esc(w[3])}</td><td><span class="pill ${/days/.test(w[4])?"bad":w[4]==="New"?"bad":"warn"}">${w[4]}</span></td></tr>`).join("")}</tbody></table></div></div>
+  </div>
+  ${why("Dashboards are role-based, with on-demand and scheduled reports exported to CSV, Excel and PDF. Portfolio figures here are simulated for illustration; the live strip at the top reflects this session. Predictive default modelling follows once loan-performance history exists (Q6.2).")}`;
+}
+function boRules(){
+  const c=BO.cfg, p=BO.pending;
+  const f=(k,l,step)=>`<span>${l}</span><input type="number" step="${step}" data-cfg="${k}" value="${p?p[k]:c[k]}" class="${p&&p[k]!==c[k]?"changed":""}" ${BO.user!=="maker"||p?"readonly":""}>`;
+  return `${why("<strong>Configuration, not code.</strong> Credit rules, weights and pricing are data. The analyst proposes a change, the manager approves it, and it takes effect as a new version with a full audit record, with no software release.")}
+  <div class="row" style="justify-content:space-between"><span class="pill red">Active rule set v${c.version}</span>${p?`<span class="pill warn">Pending v${p.version}: awaiting manager approval</span>`:""}</div>
+  <div class="grid2"><div class="card"><h3 style="font-size:15px;margin-bottom:10px">Affordability and limits</h3><div class="cfg">${f("rcr","Minimum repayment capacity ratio (x)",.05)}${f("turnoverPct","Turnover limit (% of verified annual revenue)",1)}${f("productMax","Product maximum (R)",50000)}${f("productMin","Product minimum (R)",10000)}</div></div>
+  <div class="card"><h3 style="font-size:15px;margin-bottom:10px">Score weights (%)</h3><div class="cfg">${f("wBureau","Bureau",1)}${f("wAfford","Affordability",1)}${f("wBehav","Behavioural",1)}${f("wEnv","Environmental / business",1)}</div></div>
+  <div class="card"><h3 style="font-size:15px;margin-bottom:10px">Pricing (% per year)</h3><div class="cfg">${f("baseRate","Base rate",.25)}${f("mA","Margin: grade A",.25)}${f("mB","Margin: grade B",.25)}${f("mC","Margin: grade C",.25)}${f("cap","Regulatory cap (configured)",.25)}</div></div>
+  <div class="card"><h3 style="font-size:15px;margin-bottom:10px">Fees</h3><div class="cfg">${f("initFeePct","Initiation fee (% of principal)",.1)}${f("svcFee","Monthly service fee (R)",1)}</div></div></div>
+  <div class="row">${!p?`${BO.user!=="maker"?`<button class="btn" data-user="maker">Sign in as credit analyst to edit</button>`:`<button class="btn primary" data-act="proposeCfg">Submit change for approval</button>`}<span class="small muted">${BO.user!=="maker"?"Changes are proposed by the credit analyst.":"Edit any value, then submit."}</span>`:`${BO.user!=="checker"?`<button class="btn" data-user="checker">Sign in as credit manager to approve</button>`:`<button class="btn primary" data-act="approveCfg">Approve v${p.version}</button><button class="btn" data-act="rejectCfg">Reject</button>`}<span class="small muted">${BO.user!=="checker"?"Switch to the credit manager to approve.":""}</span>`}</div>`;
+}
+function boAudit(){
+  if(!BO.audit.length) return `<div class="empty">The audit trail fills as the demo runs. Every action, rule version and decision is recorded here.</div>`;
+  return `<div class="small muted">Append-only, timestamped and attributable. ${BO.audit.length} events.</div><div class="tbl-w"><table><thead><tr><th>Time</th><th>Application</th><th>Actor</th><th>Layer</th><th>Event</th></tr></thead><tbody>${BO.audit.map(r=>`<tr><td>${r.t}</td><td>${r.app}</td><td>${esc(r.actor)}</td><td>${esc(r.layer)}</td><td>${esc(r.event)}</td></tr>`).join("")}</tbody></table></div>`;
+}
+
+
+/* ---------------- r4: modal, liveness, mandate frame ---------------- */
+function openModal(html){ const m=$("#modal"); m.innerHTML=`<div class="modal-bg" role="dialog" aria-modal="true"><div class="modal">${html}</div></div>`; const f=m.querySelector("button,input"); if(f) f.focus(); }
+function closeModal(){ $("#modal").innerHTML=""; }
+let lvStream=null;
+function stopCam(){ if(lvStream){ lvStream.getTracks().forEach(t=>t.stop()); lvStream=null; } }
+const FACE=`<svg class="face" id="lvFace" viewBox="0 0 150 170" aria-hidden="true"><g class="head"><ellipse cx="75" cy="82" rx="52" ry="64" fill="#F2D3B3" stroke="#C99E7C" stroke-width="2"/><path d="M24 70 Q30 14 75 16 Q122 14 126 70 Q112 36 75 38 Q40 36 24 70Z" fill="#2B2320"/><ellipse class="eye" cx="55" cy="80" rx="6" ry="7" fill="#1D1D22"/><ellipse class="eye" cx="95" cy="80" rx="6" ry="7" fill="#1D1D22"/><path d="M75 88 L71 106 L79 106" fill="none" stroke="#C99E7C" stroke-width="2" stroke-linecap="round"/><path id="lvMouth" d="M60 122 Q75 126 90 122" fill="none" stroke="#9C4B3C" stroke-width="3" stroke-linecap="round"/></g></svg>`;
+function runLiveness(name, opts={}){
+  return new Promise(resolve=>{
+    const C2=2*Math.PI*112;
+    openModal(`<button class="mx" id="lvX" aria-label="Close">✕</button><h3>Selfie and liveness check</h3>
+      <div class="small muted" style="margin-top:4px">${esc(name)}${opts.why?` · ${esc(opts.why)}`:""}</div>
+      ${opts.remote?`<div class="why" style="margin-top:12px"><div class="nlabel">✦ PRESENTER NOTE · HIDDEN FROM REAL CLIENTS</div><div>In a live deployment ${esc(name.split(" ")[0])} receives a secure link by SMS and completes this on their own phone. For the demo, complete it here.</div></div>`:""}
+      <div class="lv"><svg class="ring" viewBox="0 0 240 240"><circle cx="120" cy="120" r="112" fill="none" stroke="var(--surface-2)" stroke-width="8"/><circle id="lvRing" cx="120" cy="120" r="112" fill="none" stroke="url(#lvG)" stroke-width="8" stroke-linecap="round" stroke-dasharray="${C2}" stroke-dashoffset="${C2}" style="transition:stroke-dashoffset .6s ease"/><defs><linearGradient id="lvG"><stop offset="0" stop-color="#2C6394"/><stop offset="1" stop-color="#C9A45F"/></linearGradient></defs></svg>
+      <div class="cam" id="lvCam">${FACE}</div></div>
+      <div class="lv-ins" id="lvIns">Position your face in the circle</div>
+      <div class="lv-sub" id="lvSub">Good light, no hat or sunglasses. We'll ask for a few small movements.</div>
+      <div class="mrow" id="lvBtns"><button class="btn primary" id="lvGo">Start check</button><button class="btn" id="lvCamBtn">Use my camera</button></div>
+      <div class="fnote">Demo simulation. Liveness is performed by an accredited provider; images are never stored in EPS.</div>`);
+    const ring=$("#lvRing"); let running=false, done=false;
+    const finish=ok=>{ if(done) return; done=true; stopCam(); closeModal(); resolve(ok); };
+    $("#lvX").onclick=()=>finish(!!opts.canCancel?false:true);
+    $("#lvCamBtn").onclick=async()=>{
+      try{ lvStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"user"}}); $("#lvCam").innerHTML='<video autoplay playsinline muted></video>'; const v=$("#lvCam video"); v.srcObject=lvStream; $("#lvCamBtn").remove(); $("#lvSub").textContent="Camera on. Nothing is recorded in this demo."; }
+      catch(e){ $("#lvSub").textContent="Camera isn't available in this view, so the demo uses a simulated face."; $("#lvCamBtn").remove(); }
+    };
+    $("#lvGo").onclick=async()=>{
+      if(running) return; running=true; $("#lvBtns").innerHTML="";
+      const face=()=>document.getElementById("lvFace");
+      const steps=[["Hold still","Finding your face…",null],["Blink slowly","",f=>{f.classList.add("blink");setTimeout(()=>f.classList.remove("blink"),350);setTimeout(()=>{f.classList.add("blink");setTimeout(()=>f.classList.remove("blink"),300)},700);}],["Turn your head to the left","",f=>f.classList.add("left")],["Now to the right","",f=>{f.classList.remove("left");f.classList.add("right");}],["Look straight and smile","",f=>{f.classList.remove("right");const m=document.getElementById("lvMouth");if(m)m.setAttribute("d","M58 118 Q75 134 92 118");}]];
+      for(let i=0;i<steps.length;i++){ if(done) return; $("#lvIns").textContent=steps[i][0]; $("#lvSub").textContent=steps[i][1]; const f=face(); if(f&&steps[i][2]) steps[i][2](f); ring.style.strokeDashoffset=C2*(1-(i+1)/(steps.length+1)); await sleep(1100); }
+      if(done) return; $("#lvIns").textContent="Checking…"; $("#lvSub").textContent="Matching your selfie to your ID photo"; await sleep(900);
+      ring.style.strokeDashoffset=0; $("#lvIns").innerHTML='<span style="color:var(--ok)">✓ Face match confirmed</span>'; $("#lvSub").textContent="You're verified. Continuing…"; await sleep(900);
+      finish(true);
+    };
+  });
+}
+function mandateDoc(o){
+  const rows=o.rows.map(r=>`<div class="r"><span>${r[0]}</span><b>${r[1]}</b></div>`).join("");
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>
+  *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:#F4F6F9;color:#1D1D22}
+  .top{background:#1F2A37;color:#fff;padding:14px 16px 16px}.top small{opacity:.7;font-size:11px}.top h1{font-size:17px;margin:4px 0 0}
+  .t{display:flex;justify-content:space-between;font-size:11px;opacity:.8;margin-bottom:8px}
+  .card{background:#fff;margin:10px;border-radius:14px;padding:12px 14px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .amt{font-size:24px;font-weight:800;margin:2px 0 4px}.lbl{font-size:12px;color:#6B6B73}
+  .r{display:flex;justify-content:space-between;gap:10px;font-size:12px;padding:5px 0;border-top:1px solid #EEF0F3}.r span{color:#6B6B73}.r b{text-align:right}
+  .timer{font-size:12px;color:#B25E09;background:#FDF0E3;border-radius:8px;padding:6px 10px;margin:0 12px}
+  label{display:flex;gap:8px;font-size:12px;color:#4A4A55;margin:10px 14px}
+  .b{display:flex;gap:10px;padding:0 12px 14px}.b button{flex:1;border:0;border-radius:12px;padding:13px;font-weight:700;font-size:14px;cursor:pointer}
+  .ok{background:#11845B;color:#fff}.no{background:#E7E9EE;color:#1D1D22}.ok:disabled{opacity:.5}
+  .res{display:none;text-align:center;padding:40px 20px}.res .ic{width:64px;height:64px;border-radius:50%;margin:0 auto 12px;display:grid;place-items:center;font-size:30px;color:#fff}
+  </style></head><body><div id="main"><div class="top"><div class="t"><span>9:41</span><span>Secure session</span></div><small>Banking app · ${o.acct}</small><h1>${o.amend?"Approve mandate amendment":"Approve DebiCheck mandate"}</h1></div>
+  <div class="card"><div class="lbl">Creditor</div><div style="font-weight:700;margin-top:2px">Trade Capital Finance (Pty) Ltd t/a EPS</div><div class="lbl" style="margin-top:12px">Instalment amount</div><div class="amt">${o.amount}</div>${rows}</div>
+  <div class="timer">⏱ Please respond within <b id="s">120</b> seconds</div>
+  <label><input type="checkbox" id="c" checked> I authorise these debits from my account under this DebiCheck mandate.</label>
+  <div class="b"><button class="no" id="rej">Reject</button><button class="ok" id="acc">Approve</button></div></div>
+  <div class="res" id="res"><div class="ic" id="ic">✓</div><h2 id="rt" style="margin:0 0 6px;font-size:18px"></h2><div style="font-size:13px;color:#6B6B73" id="rs"></div></div>
+  <script>
+  var n=120,t=setInterval(function(){n--;document.getElementById("s").textContent=n;if(n<=0){clearInterval(t);send("expired");}},1000);
+  document.getElementById("c").onchange=function(e){document.getElementById("acc").disabled=!e.target.checked};
+  function send(d){clearInterval(t);document.getElementById("main").style.display="none";var r=document.getElementById("res");r.style.display="block";
+    var ok=d==="accept";document.getElementById("ic").style.background=ok?"#11845B":"#C4103A";document.getElementById("ic").textContent=ok?"✓":"✕";
+    document.getElementById("rt").textContent=ok?"Mandate approved":(d==="expired"?"Request expired":"Mandate rejected");
+    document.getElementById("rs").textContent=ok?"You can return to EPS.":"No debits will be collected.";
+    setTimeout(function(){parent.postMessage({type:"eps-mandate",decision:d},"*")},1100);}
+  document.getElementById("acc").onclick=function(){send("accept")};document.getElementById("rej").onclick=function(){send("reject")};
+  <\/script></body></html>`;
+}
+function openMandate(opts){
+  return new Promise(resolve=>{
+    const a=S.app, o=a.offer, acct=opts.acct||S.sc.bank;
+    const max=o?R2(o.inst*1.5):"";
+    const first=o?(a.loan?o.sched.find(x=>x.status!=="Paid")||o.sched[0]:o.sched[0]).date:"";
+    const doc=mandateDoc({amend:!!opts.amend, acct:esc(acct), amount:o?R2(o.inst):"", rows:[["Contract reference",(a.loan?a.loan.loanId:a.id)],["Frequency","Monthly, on the 1st"],["Number of instalments",o?String(o.n):""],["First collection",first],["Maximum collection",max],["Tracking","Enabled (up to 10 days)"],["Debit account",esc(acct)]]});
+    openModal(`<button class="mx" id="mdX" aria-label="Close">✕</button><h3>${opts.amend?"Approve the mandate change in your banking app":"Approve the mandate in your banking app"}</h3>
+      <div class="small muted" style="margin-top:4px">Your bank has sent you a DebiCheck request. Check the details and approve it.</div>
+      <div class="phone"><iframe id="mdF" title="Simulated banking app showing the DebiCheck mandate" sandbox="allow-scripts"></iframe></div>
+      <div class="fnote">Simulated banking app in an embedded frame. In production this appears in the client's own bank app or USSD.</div>`);
+    $("#mdF").srcdoc=doc;
+    const onMsg=ev=>{ if(ev.data&&ev.data.type==="eps-mandate"){ window.removeEventListener("message",onMsg); closeModal(); resolve(ev.data.decision); } };
+    window.addEventListener("message",onMsg);
+    $("#mdX").onclick=()=>{ window.removeEventListener("message",onMsg); closeModal(); resolve("closed"); };
+  });
+}
+
+/* ---------------- flows ---------------- */
+async function startOnboard(){
+  const a=S.app, sc=S.sc;
+  if(!$("#c1").checked||!$("#c2").checked){ toast("Both consents are needed to verify the business."); return; }
+  if(a.busy) return; a.busy=true;
+  S.account="Verifying"; BO.kpi.apps++;
+  log("Client Portal","Account created; email and mobile OTP verified",{actor:sc.applicant});
+  log("Audit","POPIA consent captured (processing + bureau), consent ref CNS-"+Math.floor(Math.random()*90000+10000));
+  const dirs=sc.directors;
+  a.checks=[
+    {id:"cipc",t:"Company registration",p:"Confirming your company with CIPC",cost:18},
+    {id:"dha",t:"Identity: "+sc.applicant,p:"Checking your ID with Home Affairs",cost:3.5},
+    ...dirs.slice(1).map((d,i)=>({id:"dha"+i,t:"Identity: "+d,p:"Checking director ID with Home Affairs",cost:3.5,dir:true})),
+    {id:"live",t:"Selfie and liveness: "+sc.applicant,p:"Matching your selfie to your ID",cost:15},
+    {id:"kyb",t:"Business ownership",p:"Confirming who owns the business",cost:0},
+    {id:"fraud",t:"Document check",p:"Checking your documents",cost:9},
+    {id:"sanc",t:"Compliance screening",p:"Standard regulatory screening",cost:6*(dirs.length+1)},
+    {id:"bur",t:"Business credit profile",p:"Retrieving your credit profile",cost:38}
+  ].map(c=>Object.assign(c,{st:"wait"}));
+  render();
+  for(const c of a.checks){
+    c.st="run"; render(); await sleep(520);
+    if(c.id==="cipc"){ c.st="ok"; c.lbl="Confirmed"; c.d="Company registration and directors confirmed";
+      log("KYC/FICA orchestration","CIPC: company "+sc.reg+" active; directors matched",{provider:"DataNamix",cost:c.cost}); }
+    else if(c.dir && sc.idFlag){ c.st="ok"; c.d="Identity confirmed after an additional check";
+      c.cost=3.5+12; log("KYC/FICA orchestration","DHA tier 1 name mismatch for "+c.t.split(": ")[1]+"; waterfall escalated to enhanced verification",{provider:"DataNamix → Smile ID",cost:c.cost});
+      a.checks.splice(a.checks.indexOf(a.checks.find(x=>x.id==="live"))+1,0,{id:"live2",t:"Selfie and liveness: "+c.t.split(": ")[1],p:"A quick selfie is needed from this director",cost:15,st:"wait"}); }
+    else if(c.id.startsWith("dha")){ c.st="ok"; c.d="Identity confirmed";
+      log("KYC/FICA orchestration","DHA identity confirmed: "+c.t.split(": ")[1],{provider:"DataNamix (tier 1)",cost:c.cost}); }
+    else if(c.id==="live"||c.id==="live2"){ await runLiveness(c.t.split(": ")[1], {remote:c.id==="live2", why:c.id==="live2"?"Director selfie":"Applying representative"}); if(S.app!==a) return; c.st="ok"; c.d="Face match confirmed";
+      log("KYC/FICA orchestration","Biometric face match and liveness passed: "+c.t.split(": ")[1],{provider:"iiDENTIFii",cost:c.cost}); }
+    else if(c.id==="kyb"){ c.st="ok"; c.lbl="Confirmed"; c.d="Ownership details confirmed"; log("Workflow","KYB derived from cached CIPC result; no second call"); }
+    else if(c.id==="fraud"){ c.st="ok"; c.lbl="Clear"; c.d="No issues found"; log("KYC/FICA orchestration","Fraud and tampering screen clear",{provider:"Smile ID + internal AI",cost:c.cost}); }
+    else if(c.id==="sanc"){ c.st="ok"; c.lbl="Clear"; c.d="Screening complete"; log("KYC/FICA orchestration","Sanctions/PEP/adverse media clear for entity and "+dirs.length+" director(s)",{provider:"RelyComply",cost:c.cost}); }
+    else if(c.id==="bur"){ c.st="ok"; c.lbl="Received"; c.d="Credit profile received";
+      log("KYC/FICA orchestration","Bureau report retrieved and cached to client record (valid 30 days)",{provider:"TransUnion",cost:c.cost}); }
+    if(S.app!==a) return;
+    render();
+  }
+  const liveSaved = sc.directors.length-1 - (sc.idFlag?1:0);
+  if(liveSaved>0) log("Workflow","Liveness not required for "+liveSaved+" unflagged director(s) (Q6.4)",{saved:15*liveSaved});
+  a.verified=true; S.account="Onboarded"; a.busy=false;
+  log("Workflow","Onboarding complete; loan request unlocked",{ok:true});
+  notify({key:"verified", kind:"act", subject:"Your business is verified", preview:"You can now apply for business funding of R50,000 to R2 million.",
+    body:[`Hi ${first()},`,`We've verified ${sc.company} and the identity of ${sc.directors.length>1?"its directors":"its director"}. Your verified details are stored securely on your EPS account, so you won't need to repeat this for future applications unless something changes.`,`Your next step is to tell us how much funding you need and what it's for. It takes about two minutes.`],
+    details:[["Company",sc.company],["Registration number",sc.reg],["Verified people",sc.directors.join(", ")],["Verified on",dstr(new Date())]],
+    cta:{label:"Start your loan request", nav:"apply"}});
+  render();
+}
+async function submitRequest(){
+  const a=S.app, sc=S.sc; if(a.busy) return;
+  const amount=+$("#ramt").value, tenor=+$("#rten").value;
+  if(!(amount>=BO.cfg.productMin)){ toast("Enter an amount of at least "+R(BO.cfg.productMin)+"."); return; }
+  a.busy=true;
+  a.req={amount,tenor,purpose:$("#rpur").value}; a.cfgVersion=BO.cfg.version;
+  a.step="assess"; a.status="In assessment"; tStart();
+  log("Client Portal",`Loan request submitted: ${R(amount)} over ${tenor} months`,{actor:sc.applicant});
+  if(!sc.bureau.debtReview) notify({key:"request", kind:"act", subject:"We've received your loan request", preview:`${R(amount)} over ${tenor} months. Next: connect your business bank account.`,
+    body:[`Hi ${first()},`,`We've received your request for ${R(amount)} over ${tenor} months.`,`To assess it, we need read-only access to 12 months of your business bank transactions. You'll connect securely through your bank; we never see your banking password, and access is used only for this assessment.`,`Most businesses get an answer within minutes of connecting.`],
+    details:[["Application",a.id],["Amount",R(amount)],["Term",tenor+" months"],["Purpose",a.req.purpose]],
+    cta:{label:"Connect your bank account", nav:"apply"}});
+  log("Workflow","Application "+a.id+" created; state LOAN_REQUEST → ASSESSMENT; STP timer started");
+  a.hard=[{t:"Active debt review",d:"From cached bureau report"},{t:"Material judgments",d:"From cached bureau report"},{t:"Liquidation / business-failure indicators",d:"CIPC status and bureau"},{t:"Biometric mismatch",d:"From onboarding results"},{t:"Document and statement tampering",d:"From fraud screen"}].map(x=>Object.assign(x,{st:"wait"}));
+  render();
+  for(const h of a.hard){ h.st="run"; render(); await sleep(260); if(S.app!==a) return;
+    if(h.t==="Active debt review"&&sc.bureau.debtReview){ h.st="bad"; a.hard.forEach(x=>{if(x.st==="wait"){x.st="skip";x.d="Not evaluated: decision already final";}}); render();
+      log("Rules engine","Stage 1 hard stop HS-DBR-01: active debt review → mandatory decline",{kind:"eng"});
+      log("Workflow","Open Banking retrieval not called (hard-stop gating)",{saved:25});
+      a.step="declined"; a.status="Declined"; BO.kpi.declined++; tPause(); a.busy=false;
+      notify({key:"declined", kind:"upd", subject:"An update on your application", preview:"We're unable to offer funding at the moment.",
+        body:[`Hi ${first()},`,`Thank you for applying. We're unable to offer funding right now, because your credit report shows that the business or a director is currently under debt review. Our credit policy doesn't allow new credit while debt review is active.`,`If you believe this record is incorrect, you can dispute it free of charge directly with the credit bureau. You're welcome to apply again once the debt review has ended, and your verified details will still be on your account.`],
+        details:[["Application",a.id],["Amount requested",R(a.req.amount)],["Reason","Active debt review (HS-DBR-01)"],["Client service","010 013 0453"]],
+        cta:{label:"Contact client service", nav:"help"}});
+      render(); return; }
+    h.st="ok"; render(); }
+  log("Rules engine","Stage 1 hard stops passed (rule set v"+BO.cfg.version+")");
+  a.hardPassed=true; tPause(); a.busy=false; render();
+}
+async function consentBank(){
+  const a=S.app, sc=S.sc; if(a.busy) return;
+  if(!$("#obc").checked){ toast("Consent is needed to retrieve bank data."); return; }
+  a.busy=true; a.consent=true; tStart();
+  log("Client Portal","Open Banking consent granted (read-only, 12 months)",{actor:sc.applicant});
+  render(); await sleep(900);
+  a.bank=buildBank(sc);
+  log("Open Banking","Retrieved 12 months of transactions from "+sc.bank,{provider:"Stitch",cost:25});
+  await sleep(500);
+  a.engine=runEngine(sc,a.req,a.bank,BO.cfg);
+  log("Rules engine",`AI classification: ${a.bank.reduce((x,y)=>x+y.txns,0)} transactions; verified revenue ${R(a.engine.avgRev)}/month`);
+  render();
+  for(let i=1;i<=5;i++){ await sleep(450); if(S.app!==a) return; a.stagesShown=i; render(); }
+  log("Rules engine",`Stages 2–5 complete: WACRM ${Math.round(a.engine.wacrm)}, grade ${a.engine.grade}`);
+  await sleep(400);
+  a.decisionShown=true;
+  const e=a.engine;
+  e.adj.forEach(x=>log("Rules engine","Risk adjustment "+x.code+" applied"));
+  log("Rules engine",`Lower-of limit: ${e.lowest.k} ${R(e.lowest.v)} → approved ${R(e.approved)} at ${pct(e.rate)} over ${e.tenor} months`);
+  if(e.decision==="approve"){ a.status="Approved"; BO.kpi.stp++; log("Workflow","Straight-through: no exception triggered",{ok:true}); toOffer(true); a.step="assess"; }
+  else if(e.decision==="refer"){ a.status="Referred for credit review"; BO.kpi.referred++; tPause();
+    notify({key:"referred", kind:"upd", subject:"Your application is with our credit team", preview:"A credit specialist is reviewing it. We'll update you within one business day.",
+      body:[`Hi ${first()},`,`Thanks for connecting your bank account. Some details in your application need a quick review by one of our credit specialists, which is a normal part of our process.`,`There's nothing you need to do right now. We'll send you a message as soon as the review is complete, usually within one business day.`],
+      details:[["Application",a.id],["Amount requested",R(a.req.amount)],["Status","In credit review"],["Expected update","Within 1 business day"]],
+      cta:{label:"View application status", nav:"apply"}});
+    BO.queue.push({id:"q"+Date.now(),type:"credit",stage:"prepare",app:a.id,company:sc.company,amount:e.approved,tenor:e.tenor});
+    log("Workflow","Exception routing: referred to credit review queue (maker-checker)"); }
+  else { a.status="Declined"; BO.kpi.declined++; tPause(); }
+  a.busy=false; render();
+}
+function toOffer(silent){
+  const a=S.app; if(a.offer) { a.step="offer"; if(!silent) render(); return; }
+  a.offer=makeOffer(a.engine,BO.cfg); a.step="offer"; a.status="Offer presented";
+  { const o=a.offer, exp=new Date(Date.now()+7*864e5);
+    notify({key:"offer", kind:"act", subject: a.referApproved?"Good news: your application is approved":"Your funding offer is ready", preview:`${R(o.P)} over ${o.n} months at ${R2(o.inst)} a month. Valid until ${dstr(exp)}.`,
+      body:[`Hi ${first()},`, a.referApproved?`Our credit team has approved your application. Here's your offer.`:`Your application has been assessed and your offer is ready.`, `Every cost is shown below. There's no penalty if you settle early. The full pre-agreement quote is in your Documents.`],
+      details:[["Loan amount",R(o.P)],["Term",o.n+" months"],["Monthly instalment",R2(o.inst)],["Interest rate (fixed)",pct(o.rate)+" a year"],["Initiation fee",R2(o.fee)],["Total cost of credit",R2(o.costOfCredit)],["Total repayable",R2(o.totalRepay)],["Offer valid until",dstr(exp)]],
+      cta:{label:"Review and accept your offer", nav:"apply"}}); }
+  tPause();
+  log("Workflow","Offer generated with full disclosure; expires in 7 days; STP timer stopped at "+fmtT(a.sysMs));
+  if(!silent) render();
+}
+function acceptOffer(){ const a=S.app; a.accepted=true; a.step="execute"; a.status="Accepted";
+  log("Client Portal","Offer accepted",{actor:S.sc.applicant}); log("Documents & e-sign","Agreement generated from template LA-BTL v3.2");
+  notify({key:"accepted", kind:"act", subject:"Next step: sign your loan agreement", preview:"Your agreement is ready. Sign it electronically with a one-time PIN.",
+    body:[`Hi ${first()},`,`Thank you for accepting your offer. Your loan agreement has been prepared using the terms you accepted.`,`Please read it and sign electronically. We'll send a one-time PIN to ${S.sc.mobile} to confirm it's you.`],
+    details:[["Application",a.id],["Loan amount",R(a.offer.P)],["Agreement","Business term loan agreement"],["How to sign","One-time PIN to your mobile"]],
+    cta:{label:"Sign your agreement", nav:"apply"}});
+  render(); }
+async function sign(){ const a=S.app; if(a.busy) return; a.busy=true;
+  log("Documents & e-sign","Agreement e-signed with OTP; document hash sealed",{actor:S.sc.applicant});
+  a.signed=true; render(); await sleep(500);
+  a.avs=true; log("KYC/FICA orchestration","Bank account verification (AVS): account holder and number match",{provider:"Sponsoring bank",cost:4}); a.busy=false;
+  notify({key:"signed", kind:"act", subject:"Agreement signed. Please approve your DebiCheck mandate", preview:`Your bank will ask you to confirm ${R2(a.offer.inst)} a month for ${a.offer.n} months.`,
+    body:[`Hi ${first()},`,`Your loan agreement is signed and a copy is in your Documents. We've also confirmed your settlement account.`,`The last step is to approve a DebiCheck debit order mandate. Your bank will send you a request to confirm it in your banking app. Repayments are only collected once you approve it.`],
+    details:[["Monthly amount",R2(a.offer.inst)],["Collection day","1st of each month"],["Number of instalments",String(a.offer.n)],["Bank account",S.sc.bank]],
+    cta:{label:"Approve your mandate", nav:"apply"}});
+  render(); }
+async function mandate(){ const a=S.app; if(a.mandate==="pending") return; a.mandate="pending"; render();
+  log("DebiCheck","Mandate initiated: "+R2(a.offer.inst)+" × "+a.offer.n+", 1st of month",{provider:"Sybrin",cost:6});
+  const d=await openMandate({});
+  if(d!=="accept"){ a.mandate="none"; log("DebiCheck","Mandate "+(d==="reject"?"rejected by client in banking app":d==="expired"?"authentication window expired":"approval not completed")); toast(d==="reject"?"You rejected the mandate. You can send it again when you're ready.":"The mandate wasn't approved. Send it again when you're ready."); render(); return; }
+  a.mandate="ok";
+  log("DebiCheck","Mandate authenticated by client in banking app",{ok:true});
+  if(S.key!=="refer") queueDisb(); else notify({key:"surety", kind:"act", subject:"One more document needed", preview:"Please upload the signed director suretyship to complete your application.",
+    body:[`Hi ${first()},`,`Thank you for approving your DebiCheck mandate.`,`Your offer includes a condition that each director signs a suretyship. Please upload the signed document so we can complete your application.`],
+    details:[["Application",a.id],["Document needed","Director suretyship (signed)"],["Accepted formats","PDF, JPG or PNG"]],
+    cta:{label:"Upload document", nav:"apply"}});
+  render(); }
+function surety(){ const a=S.app; a.surety=true; log("Documents & e-sign","Director suretyship uploaded; malware scan clean; classified as SECURITY_DOC",{actor:S.sc.applicant}); queueDisb(); render(); }
+function queueDisb(){ const a=S.app; a.status="Awaiting final approval";
+  BO.queue.push({id:"q"+Date.now(),type:"disb",stage:"prepare",app:a.id,company:S.sc.company,amount:a.offer.P,tenor:a.offer.n});
+  log("Workflow","All client-side conditions met; routed for final maker-checker approval");
+  notify({key:"final", kind:"upd", subject:"All set: final approval in progress", preview:"Everything we need from you is done. We'll pay out once final approval is complete.",
+    body:[`Hi ${first()},`,`Thank you. You've completed every step on your side.`,`Our team is now doing a final check before we release the funds. We'll let you know as soon as the money has been paid into your account.`],
+    details:[["Agreement","Signed"],["DebiCheck mandate","Approved"],["Bank account","Verified"],...(S.key==="refer"?[["Director suretyship","Received"]]:[]),["Next","Final approval and payout"]],
+    cta:{label:"Track your application", nav:"apply"}}); }
+async function qAct(id){
+  const it=BO.queue.find(x=>x.id===id), a=S.app;
+  const actor = BO.user==="maker"?"Lerato N. (Credit analyst)":"Sipho M. (Credit manager)";
+  if(it.stage==="prepare"){ it.stage="approve"; it.maker=actor;
+    log("Workflow",(it.type==="credit"?"Credit review: approval recommended":"Disbursement prepared")+" by "+actor,{actor}); toast("Sent to the credit manager for approval."); render(); return; }
+  it.done=true;
+  if(it.type==="change"){ const pf=S.pf, old=S.sc.bank; S.sc.bank=pf.pendingBank; pf.bankSt=null; pf.bankSteps=null; pf.pendingBank=null;
+    log("Workflow","Bank detail change approved by "+actor+"; settlement and debit account updated",{actor,ok:true});
+    if(a.loan) log("Loan Management","Collection account updated for "+a.loan.loanId);
+    notify({key:"bankdone", kind:"upd", subject:"Your bank account has been updated", preview:"Payments and collections now use your new account.", body:[`Hi ${first()},`,`Your new bank account is confirmed and now active on your EPS account.`,`If you didn't request this change, call us immediately on 010 013 0453.`], details:[["Previous account",old],["New account",S.sc.bank],["Effective",dstr(new Date())]], cta:{label:"View my profile", nav:"profile"}});
+    toast("Account change approved. The client has been notified."); render(); return; }
+  if(it.type==="credit"){ a.referApproved=true; a.status="Approved";
+    log("Workflow","Credit approved by "+actor+" (checker); offer released to client",{actor,ok:true});
+    toOffer(true);
+    toast("Approved. The client has been sent their offer. Open Messages in the client portal."); render(); return; }
+  log("Workflow","Final approval by "+actor+"; transmitting to Loan Booking Platform",{actor});
+  render(); await sleep(600);
+  const loanId="LB-2026-"+Math.floor(Math.random()*900000+100000);
+  const payload={applicationId:a.id, client:{name:S.sc.company, registration:S.sc.reg, clientRef:"CL-"+S.sc.reg.replace(/\//g,"")},
+    product:"BUS_TERM_LOAN", principal:a.offer.P, currency:"ZAR", termMonths:a.offer.n, annualRate:+a.offer.rate.toFixed(2),
+    fees:{initiation:+a.offer.fee.toFixed(2), monthlyService:a.offer.svc}, repayment:{method:"DEBICHECK", day:1, instalment:+a.offer.inst.toFixed(2)},
+    riskGrade:a.engine.grade, ruleSetVersion:"v"+a.cfgVersion, conditionsPrecedent:"ALL_MET", approvals:{maker:it.maker, checker:actor}, settlementAccount:S.sc.bank};
+  log("Loan Booking","POST /loans: booking request sent (signed, TLS, idempotency key)",{payload});
+  await sleep(900);
+  log("Loan Booking","201 Created: loan booked as "+loanId+"; system of record transferred",{ok:true,payload:{loanId,status:"BOOKED",firstInstalmentDate:a.offer.sched[0].date}});
+  await sleep(500);
+  log("Loan Booking","Disbursement instruction executed: "+R2(a.offer.P-a.offer.fee)+" net of initiation fee to "+S.sc.bank);
+  log("Xero","Journal posted via Loan Management Platform: loan receivable / bank / fee income");
+  log("Loan Management","Loan activated; repayment schedule and DebiCheck collections created");
+  a.loan={loanId}; a.status="Active"; a.step="monitor"; BO.kpi.disbursed+=a.offer.P;
+  notify({key:"disbursed", kind:"pay", subject:"Your funds have been paid", preview:`${R2(a.offer.P-a.offer.fee)} has been paid into ${S.sc.bank}. Loan ${loanId} is active.`,
+    body:[`Hi ${first()},`,`Your loan is active and the funds have been paid into your account.`,`Your first instalment will be collected by DebiCheck on ${a.offer.sched[0].date}. You can see your balance and repayment schedule at any time in your loan account.`],
+    details:[["Loan account",loanId],["Loan amount",R2(a.offer.P)],["Paid to your account",R2(a.offer.P-a.offer.fee)+" (after initiation fee)"],["Monthly instalment",R2(a.offer.inst)],["First collection",a.offer.sched[0].date]],
+    cta:{label:"View your loan account", nav:"apply"}});
+  toast("Loan booked and disbursed. Switch to the client portal to see the live account."); render();
+}
+function collect(){ const r=S.app.offer.sched.find(x=>x.status==="Scheduled"||x.status==="Missed"); if(!r){toast("All instalments are paid.");return;}
+  const was=r.status; r.status="Paid";
+  log("DebiCheck",`Collection ${r.k} successful: ${R2(r.inst)}${was==="Missed"?" (arrears cleared on retry)":""}`,{ok:true});
+  log("Loan Management","Payment allocated; status synced to EPS"); log("Xero","Receipt reconciled");
+  const o=S.app.offer, bal=o.sched.filter(x=>x.status!=="Paid").reduce((s2,x)=>s2+x.prin,0), nxt=o.sched.find(x=>x.status!=="Paid");
+  if(o.sched.every(x=>x.status==="Paid")){ S.app.status="Settled"; log("Loan Management","Loan settled and closed; clearance certificate issued");
+    notify({key:"settled", kind:"pay", subject:"Your loan is fully settled", preview:"Congratulations. Your clearance letter is in your Documents.", body:[`Hi ${first()},`,`Your final instalment has been received and your loan is now settled. Your clearance letter is in your Documents.`,`Your verified details stay on your account, so applying again takes only a few minutes.`], details:[["Loan account",S.app.loan.loanId],["Status","Settled"]], cta:{label:"View your loan account", nav:"apply"}}); }
+  else { if(S.app.status==="Active · in arrears" && !o.sched.some(x=>x.status==="Missed")) S.app.status="Active";
+    notify({key:"paid", kind:"pay", subject:`Payment received: instalment ${r.k} of ${o.n}`, preview:`We received ${R2(r.inst)}. Thank you.${was==="Missed"?" Your account is up to date.":""}`,
+    body:[`Hi ${first()},`,`We've received your instalment of ${R2(r.inst)}${was==="Missed"?", and your account is now up to date":""}. Thank you.`],
+    details:[["Loan account",S.app.loan.loanId],["Instalment",`${r.k} of ${o.n}`],["Amount received",R2(r.inst)],["Capital outstanding",R2(bal)],["Next collection",nxt?nxt.date:"None"]],
+    cta:{label:"View your loan account", nav:"apply"}}); }
+  render(); }
+function miss(){ const r=S.app.offer.sched.find(x=>x.status==="Scheduled"); if(!r){toast("No scheduled instalments left.");return;}
+  r.status="Missed"; S.app.status="Active · in arrears";
+  log("DebiCheck","Collection "+r.k+" returned: insufficient funds");
+  log("Loan Management","Arrears raised; early-warning indicator triggered; retry scheduled in 3 days");
+  notify({key:"missed", kind:"act", subject:"We couldn't collect your instalment", preview:`${R2(r.inst)} is overdue. We'll try again in 3 days, or you can pay now by EFT.`,
+    body:[`Hi ${first()},`,`We tried to collect your instalment of ${R2(r.inst)} due ${r.date}, but your bank returned it because of insufficient funds.`,`We'll automatically try again in 3 days. To avoid further fees or impact on your credit record, you can pay now by EFT using your loan account number as the reference. If you're having difficulty, please contact us. We're here to help.`],
+    details:[["Loan account",S.app.loan.loanId],["Amount overdue",R2(r.inst)],["Next collection attempt","In 3 days"],["EFT reference",S.app.loan.loanId],["Help","010 013 0453"]],
+    cta:{label:"View your arrears", nav:"apply"}});
+  render(); }
+function newApp(){ const keepAcc=S.account; const oldFeed=S.feed, used=S.layersUsed;
+  const oldMsgs=S.msgs; S.app=freshApp(); S.account=keepAcc; S.reuse=true; S.feed=oldFeed; S.msgs=oldMsgs; S.layersUsed=used; S.app.step="request"; BO.kpi.apps++;
+  const saved=S.sc.directors.length*3.5+18+15+9+6*(S.sc.directors.length+1)+38+(S.sc.idFlag?27:0);
+  log("Workflow","New application "+S.app.id+": verification results still valid; onboarding skipped",{saved}); render(); }
+function proposeCfg(){
+  const draft=Object.assign({},BO.cfg); let changed=[];
+  document.querySelectorAll("[data-cfg]").forEach(i=>{const k=i.dataset.cfg, v=parseFloat(i.value); if(!isNaN(v)&&v!==BO.cfg[k]){draft[k]=v;changed.push(k+": "+BO.cfg[k]+" → "+v);}});
+  if(!changed.length){ toast("Change at least one value first."); return; }
+  const [maj,min]=BO.cfg.version.split(".").map(Number); draft.version=maj+"."+(min+1);
+  BO.pending=draft; log("Rules engine","Rule change proposed as v"+draft.version+": "+changed.join("; "),{actor:"Lerato N. (Credit analyst)"}); render(); }
+function approveCfg(){ const v=BO.pending.version; BO.cfg=BO.pending; BO.pending=null;
+  log("Rules engine","Rule set v"+v+" approved and effective for new applications",{actor:"Sipho M. (Credit manager)",ok:true}); toast("Rule set v"+v+" is now active."); render(); }
+function rejectCfg(){ log("Rules engine","Proposed rule set v"+BO.pending.version+" rejected",{actor:"Sipho M. (Credit manager)"}); BO.pending=null; render(); }
+
+/* ---------------- events ---------------- */
+const ACTIONS={startOnboard, toRequest(){S.app.step="request";render();}, submitRequest, consentBank, toOffer, acceptOffer,
+  declineOffer(){ const a=S.app; if(a.offerSaved) return; a.offerSaved=true; a.status="Offer saved"; log("Client Portal","Client saved the offer to decide later; valid for 7 days",{actor:S.sc.applicant});
+  notify({key:"saved", kind:"act", subject:"Your offer is saved", preview:"Take your time. Your offer stays open for 7 days.", body:[`Hi ${first()},`,`We've saved your offer of ${R(a.offer.P)} over ${a.offer.n} months. It stays open for 7 days, and you can accept it at any time before then.`,`If anything about your business changes in the meantime, we may need to update the offer.`], details:[["Loan amount",R(a.offer.P)],["Monthly instalment",R2(a.offer.inst)],["Valid for","7 days"]], cta:{label:"Review your offer", nav:"apply"}}); toast("Offer saved. It stays open for 7 days."); render(); },
+  menu(){ S.menu=!S.menu; header(); },
+  pfEdit(id){ S.pf.edit=id; S.pf.otp=false; render(); },
+  pfCancel(){ S.pf.edit=null; S.pf.otp=false; render(); },
+  pfOtp(){ const e=$("#pfEmail").value.trim(), m=$("#pfMobile").value.trim(); if(!/^\S+@\S+\.\S+$/.test(e)){ toast("Enter a valid email address."); return; } if(m.replace(/\D/g,"").length<10){ toast("Enter a valid mobile number."); return; } S.pf.newEmail=e; S.pf.newMobile=m; S.pf.otp=true; log("Client Portal","OTP sent to new contact details",{actor:S.sc.applicant}); render(); },
+  pfContactSave(){ const old=S.sc.mobile; S.sc.email=S.pf.newEmail; S.sc.mobile=S.pf.newMobile; S.pf.edit=null; S.pf.otp=false;
+    log("Client Portal","Contact details changed after OTP verification",{actor:S.sc.applicant}); log("Audit","Contact change recorded; security notice sent to previous number "+old);
+    notify({key:"contact", kind:"upd", subject:"Your contact details were changed", preview:"If you didn't make this change, call us immediately.", body:[`Hi ${first()},`,`Your email address and mobile number on your EPS account were changed today. We've sent this notice to both your old and new details.`,`If you didn't make this change, call us immediately on 010 013 0453 so we can secure your account.`], details:[["Email",S.sc.email],["Mobile",S.sc.mobile],["Changed",dstr(new Date())]], cta:{label:"Review my profile", nav:"profile"}});
+    toast("Contact details updated."); render(); },
+  async pfAddrSave(){ const v=$("#pfAddr").value.trim(); if(v.length<8){ toast("Enter the full address."); return; } S.pf.edit=null; S.pf.addr=v; S.pf.addrSt="Checking"; log("Documents & e-sign","Proof of address uploaded; malware scan clean; classified as PROOF_OF_ADDRESS",{actor:S.sc.applicant}); render();
+    await sleep(1600); S.pf.addrSt="Verified"; log("KYC/FICA orchestration","Proof of address verified: name and address match, dated within 3 months",{provider:"Document intelligence",cost:1.2,ok:true}); toast("Address verified."); render(); },
+  async pfCipc(){ log("KYC/FICA orchestration","Director change reported; CIPC record re-checked",{provider:"DataNamix",cost:18}); toast("Checking the latest CIPC record…"); await sleep(1200); S.pf.cipcAt=dstr(new Date());
+    notify({key:"cipc", kind:"upd", subject:"We checked your company record", preview:"No director changes are registered at CIPC yet.", body:[`Hi ${first()},`,`We checked your company's record at CIPC. We don't see any director changes yet.`,`Once the change is registered at CIPC, report it again and we'll verify any new director's identity with a quick selfie check. Your existing details stay valid in the meantime.`], details:[["Company",S.sc.company],["Directors on record",S.sc.directors.join(", ")]], cta:{label:"Back to my profile", nav:"profile"}});
+    render(); },
+  async pfBankGo(){ const bank=$("#pfBank").value, acc=$("#pfAcc").value.replace(/\D/g,""); if(acc.length<8){ toast("Enter a valid account number."); return; }
+    const a=S.app, pf=S.pf; pf.pendingBank=bank+" Business ·· "+acc.slice(-4); pf.edit=null; pf.bankSt="Selfie check";
+    pf.bankSteps=[["Selfie","on"],["Ownership check",""],...(a.loan?[["Mandate",""]]:[]),["Approval",""]]; render();
+    log("Client Portal","Bank account change started: "+pf.pendingBank,{actor:S.sc.applicant});
+    await runLiveness(S.sc.applicant,{why:"Confirming it's you before changing your bank account"}); pf.bankSteps[0][1]="ok"; pf.bankSteps[1][1]="on"; pf.bankSt="Ownership check";
+    log("KYC/FICA orchestration","Step-up liveness passed for bank change",{provider:"iiDENTIFii",cost:15,ok:true}); render();
+    await sleep(1200); pf.bankSteps[1][1]="ok"; log("KYC/FICA orchestration","AVS: new account holder and number match the company",{provider:"Sponsoring bank",cost:4,ok:true});
+    if(a.loan){ pf.bankSteps[2][1]="on"; pf.bankSt="Mandate amendment"; render(); const d=await openMandate({amend:true, acct:pf.pendingBank});
+      if(d!=="accept"){ pf.bankSt=null; pf.bankSteps=null; pf.pendingBank=null; log("DebiCheck","Mandate amendment not approved; bank change cancelled"); toast("The mandate change wasn't approved, so your bank account wasn't changed."); render(); return; }
+      pf.bankSteps[2][1]="ok"; log("DebiCheck","Mandate amendment authenticated on new account",{provider:"Sybrin",cost:6,ok:true}); }
+    pf.bankSteps[pf.bankSteps.length-1][1]="on"; pf.bankSt="Pending approval";
+    BO.queue.push({id:"q"+Date.now(),type:"change",stage:"approve",maker:"System (liveness, AVS"+(a.loan?", mandate":"")+" passed)",app:a.id,company:S.sc.company,amount:0,tenor:0,detail:S.sc.bank+" → "+pf.pendingBank});
+    log("Workflow","Bank detail change routed to back-office for approval");
+    notify({key:"bankreq", kind:"upd", subject:"We're confirming your new bank account", preview:"Your checks passed. A team member will confirm the change shortly.", body:[`Hi ${first()},`,`Thanks for confirming it's you. Your selfie and account ownership checks passed${a.loan?" and your updated DebiCheck mandate is approved":""}.`,`For your protection, a team member confirms every bank account change before it takes effect. We'll let you know as soon as it's done.`], details:[["Current account",S.sc.bank],["New account",pf.pendingBank],["Status","Pending approval"]], cta:{label:"View my profile", nav:"profile"}});
+    toast("Checks passed. Sent for approval."); render(); },
+
+  msgGo(id){ const m=S.msgs.find(x=>x.id===id), a=S.app; S.nav=(m&&m.cta&&m.cta.nav)||"apply";
+    if(S.nav==="apply"){
+      if(a.step==="onboard"&&a.verified){ a.step="request"; }
+      else if(a.step==="assess"&&a.referApproved&&!a.offer){ toOffer(); return; }
+    }
+    render(); window.scrollTo(0,0); },
+  period(id){ BO.period=id; render(); },
+  invoiceInfo(){ toast("Invoice discounting runs on the existing EPS platform. This demo covers the new business loans."); },
+  sign, mandate, surety, collect, miss, newApp, proposeCfg, approveCfg, rejectCfg,
+  restartSame(){ const keys=Object.keys(SCENARIOS), nx=keys[(keys.indexOf(S.key)+1)%keys.length]; $("#scn").value=nx; S.view="client"; init(true); log("Workflow","Demo scenario loaded: "+S.sc.company); toast("Loaded: "+SCENARIOS[nx].label); }};
+document.addEventListener("click",ev=>{
+  const b=ev.target.closest("button"); if(!b||b.disabled) return;
+  if(b.dataset.act){ if(b.dataset.act==="qAct") qAct(b.dataset.id); else ACTIONS[b.dataset.act](b.dataset.id); }
+  else if(b.dataset.open){ S.nav="msg:"+b.dataset.open; render(); window.scrollTo(0,0); }
+  else if(b.dataset.view){ S.menu=false; S.view=b.dataset.view; if(S.view==="client"&&S.nav!=="apply"&&!b.closest(".side")) S.nav="apply"; render(); }
+  else if(b.dataset.scroll){ if(S.menu){ S.menu=false; header(); } const t=document.getElementById(b.dataset.scroll); if(t) t.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"}); }
+  else if(b.dataset.nav){ S.nav=b.dataset.nav; render(); window.scrollTo(0,0); }
+  else if(b.dataset.ten){ calcState.ten=+b.dataset.ten; calcUpdate(); }
+  else if(b.dataset.tab){ BO.tab=b.dataset.tab; render(); }
+  else if(b.dataset.user){ BO.user=b.dataset.user; render(); }
+});
+$("#scn").innerHTML=Object.entries(SCENARIOS).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join("");
+
+/* ---------------- r4: AI assistant ---------------- */
+const chat={turns:[], busy:false, ctl:null, sample:undefined};
+(async()=>{ try{ chat.sample = window.claude && window.claude.use ? await window.claude.use("sample") : null; }catch(e){ chat.sample=null; } })();
+function chatContext(){
+  const a=S.app, o=a.offer, sc=S.sc;
+  const ctx={view:S.view==="bo"?"EPS staff console":"client", product:{name:"EPS business term loan",amounts:"R50,000 to R2 million",terms:"3, 6, 9 or 12 months",repayment:"monthly by DebiCheck",earlySettlementPenalty:"none",targetTimeToOffer:"under 5 minutes for eligible businesses",verifyOnce:"verified details are reused for later applications until they expire or change"},
+    client:{company:sc.company,applicant:sc.applicant,accountStatus:S.account,email:sc.email,mobile:sc.mobile,bankAccount:sc.bank},
+    application:{id:a.id,status:a.status,currentStep:a.step,requested:a.req?{amount:a.req.amount,termMonths:a.req.tenor,purpose:a.req.purpose}:null,
+      offer:o?{amount:o.P,termMonths:o.n,annualRatePct:+o.rate.toFixed(2),monthlyInstalment:+o.inst.toFixed(2),initiationFee:+o.fee.toFixed(2),monthlyServiceFee:o.svc,totalCostOfCredit:+o.costOfCredit.toFixed(2),totalRepayable:+o.totalRepay.toFixed(2),validFor:"7 days"}:null,
+      nextAction:({onboard:"complete registration and verification",request:"submit the loan request",assess:a.referApproved||!a.engine?"wait for the assessment":"credit team review",declined:"application declined because of active debt review",offer:"review and accept the offer",execute:!a.signed?"sign the loan agreement":a.mandate!=="ok"?"approve the DebiCheck mandate in the banking app":S.key==="refer"&&!a.surety?"upload the director suretyship":"final approval and payout",monitor:"loan is active; repayments by DebiCheck"})[a.step],
+      loan:a.loan?{account:a.loan.loanId,paid:o.sched.filter(x=>x.status==="Paid").length,missed:o.sched.filter(x=>x.status==="Missed").length,nextDue:(o.sched.find(x=>x.status!=="Paid")||{}).date}:null},
+    unreadMessages:S.msgs.filter(m=>!m.read).map(m=>m.subject).slice(0,5),
+    howToUpdateDetails:"My profile page: contact details need a one-time PIN; address needs proof of address; bank account needs a selfie check, account ownership check, a DebiCheck mandate amendment if a loan is active, and staff approval; director changes are re-checked with CIPC.",
+    contact:"Client service 010 013 0453, clientservice@earlypaymentsystem.co.za, Monday to Friday 08:00 to 17:00"};
+  if(S.view==="bo"){ const q=BO.queue.filter(x=>!x.done); ctx.staff={queue:q.map(x=>({app:x.app,type:x.type,stage:x.stage})), sessionKpis:BO.kpi, activeRuleSet:"v"+BO.cfg.version}; }
+  return JSON.stringify(ctx);
+}
+function chatPrompt(q){
+  return `You are "EPS Assistant", the AI helper on the Early Payment System (EPS) business loans website and client portal in South Africa. EPS is a subsidiary of Trade Capital Finance. This is a demonstration environment with fictitious clients.
+Rules: answer in plain text (no markdown, no bullet symbols), friendly South African English, at most 110 words. Use ONLY the CONTEXT for anything about this client, their application, offer, loan or messages; never invent figures, dates or statuses. Format money like R 600 000. If asked to do something you cannot do (change details, approve, pay), explain exactly where and how to do it in the portal. Don't give personal financial advice; you can explain costs and terms. If the user is in the staff console, answer as an operations assistant. If the user asks to go to a screen, call the navigate tool. If unsure, suggest client service.
+CONTEXT: ${chatContext()}`;
+}
+function chatRender(){
+  const b=$("#chatB");
+  if(!chat.turns.length){ b.innerHTML=`<div class="bub a">Hi! I'm the EPS assistant. Ask me about our business loans, where your application stands, your offer, or how to update your details.<span class="src">${chat.sample?"AI-powered · answers use your live application data":"Demo mode"}</span></div>`; }
+  else b.innerHTML=chat.turns.map(t=>`<div class="bub ${t.role==="user"?"u":"a"}${t.think?" think":""}">${esc(t.content)}${t.role==="assistant"&&t.src?`<span class="src">${esc(t.src)}</span>`:""}</div>`).join("");
+  b.scrollTop=b.scrollHeight;
+  const sugg=S.view==="bo"?["What's in my work queue?","Summarise this session","Which rule set is active?"]:(S.app.offer?["Explain my offer","What happens next?","Can I settle early?","How do I change my bank account?"]:["How much can I borrow?","What do I need to apply?","Where is my application?","How do I update my details?"]);
+  $("#chatChips").innerHTML=chat.busy?"":sugg.map(s2=>`<button type="button" data-q="${esc(s2)}">${esc(s2)}</button>`).join("");
+}
+function scripted(q){
+  const t=q.toLowerCase(), a=S.app, o=a.offer;
+  if(/offer|rate|interest|instal|cost/.test(t)&&o) return `Your offer is ${R(o.P)} over ${o.n} months at ${pct(o.rate)} a year. The monthly instalment is ${R2(o.inst)}, including a ${R(o.svc)} service fee. Total cost of credit is ${R2(o.costOfCredit)}. It's valid for 7 days.`;
+  if(/settle|early/.test(t)) return "Yes. You can settle your loan early at any time, with no early settlement penalty.";
+  if(/bank|account|detail|update|change|profile|address|email|phone|mobile/.test(t)) return "Go to My profile in the portal. Contact details need a one-time PIN. A new address needs proof of address. Changing your bank account needs a quick selfie check, an ownership check and staff approval (plus a DebiCheck update if your loan is active).";
+  if(/where|status|next|progress/.test(t)) return `Your application ${a.id} is at: ${a.status}. Next step: ${JSON.parse(chatContext()).application.nextAction}.`;
+  if(/borrow|how much|amount|term/.test(t)) return "You can borrow from R50,000 to R2 million over 3, 6, 9 or 12 months, repaid monthly by DebiCheck. Your limit depends on your verified cash flow and risk assessment.";
+  if(/need|document|apply|requirement/.test(t)) return "You need your company registration details, the ID numbers of your directors, a quick selfie check, and read-only access to 12 months of business bank data. Audited financial statements help for larger amounts.";
+  return "I can help with our loans, your application, your offer and updating your details. For anything else, call client service on 010 013 0453.";
+}
+async function chatAsk(q){
+  q=q.trim(); if(!q||chat.busy) return;
+  $("#chatErr").textContent="";
+  chat.turns.push({role:"user",content:q});
+  if(!chat.sample){ chat.turns.push({role:"assistant",content:scripted(q),src:"Demo mode: scripted answer (AI isn't available in this view)"}); chatRender(); return; }
+  const reply={role:"assistant",content:"Thinking…",think:true,src:"AI-powered · uses your live application data"}; chat.turns.push(reply);
+  chat.busy=true; $("#chatSend").classList.add("hidden"); $("#chatStop").classList.remove("hidden"); chatRender();
+  const hist=chat.turns.slice(0,-1).filter(t=>!t.think&&!t.failed).slice(-8).map(t=>({role:t.role,content:t.content}));
+  if(hist.length&&hist[0].role==="assistant") hist.shift();
+  hist[0]={role:"user",content:chatPrompt()+"\n\nUser: "+hist[0].content};
+  if(hist.length>1) hist[hist.length-1]={role:"user",content:"(Updated CONTEXT: "+chatContext()+")\n\nUser: "+hist[hist.length-1].content};
+  chat.ctl=new AbortController();
+  const tools=[{name:"navigate",description:"Open a screen for the user in the EPS portal.",inputSchema:{type:"object",properties:{screen:{type:"string",enum:["application","messages","documents","profile","help","website","dashboard"]}},required:["screen"]},
+    execute:({screen})=>{ if(screen==="website"){S.view="home";} else if(screen==="dashboard"){S.view="bo";BO.tab="dash";} else {S.view="client"; S.nav={application:"apply",messages:"msgs",documents:"docs",profile:"profile",help:"help"}[screen]||"apply";} render(); return {opened:screen}; }}];
+  const run=withTools=>chat.sample(hist,{modelTier:"quick",cache:false,signal:chat.ctl.signal,tools:withTools?tools:undefined,onText:({text})=>{ reply.think=false; reply.content=text; chatRender(); }});
+  try{
+    let res; try{ res=await run(true); }catch(e){ if(e&&e.code==="tools_unavailable") res=await run(false); else throw e; }
+    reply.think=false; reply.content=res.text||reply.content;
+  }catch(e){
+    const code=e&&e.code;
+    if(code==="cancelled"){ reply.think=false; reply.content=(e.text||"")||"Stopped."; }
+    else if(code==="not_granted"||code==="sampling_disabled"||code==="not_declared"||code==="capability_disabled"||code==="capability_removed"){ chat.sample=null; reply.think=false; reply.content=scripted(q); reply.src="Demo mode: scripted answer (AI access wasn't allowed)"; }
+    else if(code==="rate_limited"||code==="queue_overflow"){ reply.think=false; reply.failed=true; reply.content=e.text||"I'm getting a lot of questions right now. Please try again in a moment."; }
+    else { reply.think=false; reply.failed=true; reply.content=e&&e.text?e.text:"Sorry, I couldn't answer that just now. Please try again, or call 010 013 0453."; }
+  }finally{ chat.busy=false; $("#chatSend").classList.remove("hidden"); $("#chatStop").classList.add("hidden"); chatRender(); }
+}
+function chatOpen(open){ $("#chat").hidden=!open; $("#chatFab").setAttribute("aria-expanded",String(open)); if(open){ chatRender(); $("#chatIn").focus(); } }
+$("#chatFab").addEventListener("click",()=>chatOpen($("#chat").hidden));
+$("#chatX").addEventListener("click",()=>chatOpen(false));
+$("#chatStop").addEventListener("click",()=>{ if(chat.ctl) chat.ctl.abort(); });
+$("#chatF").addEventListener("submit",ev=>{ ev.preventDefault(); const v=$("#chatIn").value; $("#chatIn").value=""; chatAsk(v); });
+$("#chatChips").addEventListener("click",ev=>{ const b=ev.target.closest("[data-q]"); if(b) chatAsk(b.dataset.q); });
+document.addEventListener("input",ev=>{ if(ev.target.id==="calcAmt"){ calcState.amt=+ev.target.value; calcUpdate(); } });
+function setTrace(open){ $("#drawer").classList.toggle("open",open); document.body.classList.toggle("trace-open",open); $("#traceBtn").setAttribute("aria-pressed",String(open)); }
+$("#traceBtn").addEventListener("click",()=>setTrace(!$("#drawer").classList.contains("open")));
+function setDockMin(m){ document.querySelector(".dock").classList.toggle("min",m); $("#dockMin").textContent=m?"+":"–"; $("#dockMin").setAttribute("aria-expanded",String(!m)); $("#dockMin").setAttribute("aria-label",m?"Show demo controls":"Minimise demo controls"); }
+$("#dockMin").addEventListener("click",()=>setDockMin(!document.querySelector(".dock").classList.contains("min")));
+if(matchMedia("(max-width:640px)").matches) setDockMin(true);
+$("#notesBtn").addEventListener("click",()=>{ const off=!document.body.classList.contains("notes-off"); document.body.classList.toggle("notes-off",off); $("#notesBtn").setAttribute("aria-pressed",String(!off)); });
+$("#xTrace").addEventListener("click",()=>setTrace(false));
+$("#scn").addEventListener("change",()=>{ S.view="client"; init(true); log("Workflow","Demo scenario loaded: "+S.sc.company); });
+$("#reset").addEventListener("click",()=>{ S.view="home"; init(false); toast("Demo restarted."); });
+init(false);
+})();
+</script>
+</body>
+</html>
